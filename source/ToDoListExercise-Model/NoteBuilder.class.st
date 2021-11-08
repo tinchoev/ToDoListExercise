@@ -2,28 +2,58 @@ Class {
 	#name : #NoteBuilder,
 	#superclass : #Object,
 	#instVars : [
-		'note'
+		'description',
+		'category',
+		'endingDate',
+		'assignedEmployee'
 	],
 	#category : #'ToDoListExercise-Model'
 }
 
+{ #category : #constructor }
+NoteBuilder class >> described: aDescription asignedTo: anEmployee [ 
+	^ self new initializeDescribed: aDescription asignedTo: anEmployee 
+]
+
 { #category : #accessing }
+NoteBuilder >> assignedEmployee [
+	^ assignedEmployee
+]
+
+{ #category : #creation }
 NoteBuilder >> build [
-	^ note
+	^ Note newFrom: self
+]
+
+{ #category : #accessing }
+NoteBuilder >> category [
+	^ category
 ]
 
 { #category : #modifying }
 NoteBuilder >> category: aCategory [ 
-	note category: aCategory .
+	category := aCategory .
 	^ self
 ]
 
-{ #category : #creation }
-NoteBuilder >> createNoteDescribed: aString asignedTo: aString2 [ 
-	self shouldBeImplemented.
+{ #category : #accessing }
+NoteBuilder >> description [
+	^ description
+]
+
+{ #category : #accessing }
+NoteBuilder >> endingDate [
+	^ endingDate
+]
+
+{ #category : #modifying }
+NoteBuilder >> endingDate: anEndingDate [ 
+	endingDate := anEndingDate .
+	^ self
 ]
 
 { #category : #initialization }
-NoteBuilder >> initialize [
-	note := Note new.
+NoteBuilder >> initializeDescribed: aDescription asignedTo: anEmployee [ 
+	description := aDescription .
+	assignedEmployee := anEmployee
 ]

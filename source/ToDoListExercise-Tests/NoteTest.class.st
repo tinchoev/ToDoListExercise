@@ -7,28 +7,37 @@ Class {
 { #category : #tests }
 NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 	| note |
-	note := Note described: 'aDescription' categorized: 'aCategory' endingAt: '01-01-2022' asignedTo: 'Martin' .
-	note modifyState .
-	note modifyState .
-	self should: [note reassignTo: 'Lucas']
-	raise: AssertionFailed
-	withMessageText: 'Action failed because the note is finished'
+	note := (NoteBuilder described: 'aDescription' asignedTo: 'Mickey')
+		build.
+	note modifyState.
+	note modifyState.
+	self
+		should: [ note reassignTo: 'Goofy' ]
+		raise: AssertionFailed
+		withMessageText: 'Action failed because the note is finished'
 ]
 
 { #category : #tests }
 NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 	| note |
-	note := Note described: 'aDescription' categorized: 'aCategory' endingAt: '01-01-2022' asignedTo: 'Martin' .
-	note modifyState .
-	self should: [note reassignTo: 'Lucas']
-	raise: AssertionFailed
-	withMessageText: 'Action failed because the note is in progress'
+	note := (NoteBuilder described: 'aDescription' asignedTo: 'Mickey')
+		build.
+	note modifyState.
+	self
+		should: [ note reassignTo: 'Goofy' ]
+		raise: AssertionFailed
+		withMessageText: 'Action failed because the note is in progress'
 ]
 
 { #category : #tests }
 NoteTest >> testCreateNoteWithCategoryAndEndingDate [
 	| aNote |
-	aNote := Note described: 'aDescription' categorized: 'aCategory' endingAt: 'aDate' asignedTo: 'anEmployee'.
+	aNote := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		category: 'aCategory';
+		endingDate: 'aDate';
+		build.
 	self assert: aNote category isNotNil.
 	self assert: aNote endingDate isNotNil
 ]
@@ -36,7 +45,11 @@ NoteTest >> testCreateNoteWithCategoryAndEndingDate [
 { #category : #tests }
 NoteTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 	| aNote |
-	aNote := Note described: 'aDescription' categorized: 'aCategory' endingAt: nil asignedTo: 'anEmployee'.
+	aNote := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		category: 'aCategory';
+		build.
 	self assert: aNote category isNotNil.
 	self assert: aNote endingDate isNil
 ]
@@ -44,7 +57,10 @@ NoteTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 { #category : #tests }
 NoteTest >> testCreateNoteWithoutCategoryAndEndingDate [
 	| aNote |
-	aNote := Note described: 'aDescription' categorized: nil endingAt: nil asignedTo: 'anEmployee'.
+	aNote := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		build.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNil
 ]
@@ -52,7 +68,11 @@ NoteTest >> testCreateNoteWithoutCategoryAndEndingDate [
 { #category : #tests }
 NoteTest >> testCreateNoteWithoutCategoryAndWithEndingDate [
 	| aNote |
-	aNote := Note described: 'aDescription' categorized: nil endingAt: 'anEndingDate' asignedTo: 'anEmployee'.
+	aNote := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		endingDate: 'aDate';
+		build.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNotNil
 ]
@@ -60,7 +80,11 @@ NoteTest >> testCreateNoteWithoutCategoryAndWithEndingDate [
 { #category : #tests }
 NoteTest >> testModifyEndingDate [
 	| note |
-	note := Note described: 'aDescription' categorized: 'aCategory' endingAt: '01-01-2022' asDate asignedTo: 'Martin' .
+	note := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		endingDate: '01-01-2022' asDate;
+		build.
 	self assert: note endingDate equals: '01-01-2022' asDate .
 	note modifyEndingDateTo: '02-02-2022' asDate .
 	self assert: note endingDate equals: '02-02-2022' asDate
@@ -69,7 +93,10 @@ NoteTest >> testModifyEndingDate [
 { #category : #tests }
 NoteTest >> testReassignToAnotherEmployee [
 	| note |
-	note := Note described: 'aDescription' categorized: 'aCategory' endingAt: '01-01-2022' asignedTo: 'Martin' .
+	note := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'Martin')
+		build.
 	self assert: note assignedEmployee equals: 'Martin' .
 	note reassignTo: 'Lucas'.
 	self assert: note assignedEmployee equals: 'Lucas'
@@ -78,7 +105,10 @@ NoteTest >> testReassignToAnotherEmployee [
 { #category : #tests }
 NoteTest >> testState [
 	| note |
-	note := Note described: 'aDescription' categorized: 'aCategory' endingAt: '01-01-2022' asDate asignedTo: 'Martin' .
+	note := (NoteBuilder
+		described: 'aDescription'
+		asignedTo: 'anEmployee')
+		build.
 	self assert: note state equals: 'open' .
 	note modifyState.
 	self assert: note state equals: 'in progress' .

@@ -6,8 +6,7 @@ Class {
 		'category',
 		'endingDate',
 		'state',
-		'assignedEmployee',
-		'builder'
+		'assignedEmployee'
 	],
 	#classInstVars : [
 		'description',
@@ -17,19 +16,14 @@ Class {
 	#category : #'ToDoListExercise-Model'
 }
 
-{ #category : #construction }
-Note class >> described: aDescription asignedTo: anEmployee [ 
-	^ self new initializeDescribed: aDescription asignedTo: anEmployee .
+{ #category : #constructor }
+Note class >> newFrom: aBuilder [
+	^ self new initializeWith: aBuilder
 ]
 
 { #category : #accesing }
 Note >> assignedEmployee [
 	^ assignedEmployee
-]
-
-{ #category : #accessing }
-Note >> builder [
-	^ builder
 ]
 
 { #category : #accessing }
@@ -43,11 +37,12 @@ Note >> endingDate [
 ]
 
 { #category : #initialization }
-Note >> initializeDescribed: aDescription asignedTo: anEmployee [ 
-	description := aDescription .
-	assignedEmployee := anEmployee .
-	state := 'open' .
-	builder := NoteBuilder with: self.
+Note >> initializeWith: aBuilder [
+	description := aBuilder description.
+	category := aBuilder category.
+	endingDate := aBuilder endingDate.
+	state := 'open'.
+	assignedEmployee := aBuilder assignedEmployee
 ]
 
 { #category : #modifying }
