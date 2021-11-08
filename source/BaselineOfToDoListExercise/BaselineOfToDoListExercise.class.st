@@ -6,16 +6,15 @@ Class {
 
 { #category : #accessing }
 BaselineOfToDoListExercise >> baseline: spec [
-
 	<baseline>
 	spec
 		for: #pharo
-		do: [ 
-			self setUpDependencies: spec.
-
+		do: [ self setUpDependencies: spec.
 			spec
-				package: 'ToDoListExercise-Model' with: [ spec requires: #('Aconcagua' 'Chalten' 'Buoy') ]
-			]
+				package: 'ToDoListExercise-Model'
+					with: [ spec requires: #('Aconcagua' 'Chalten' 'Buoy') ];
+				package: 'ToDoListExercise-Tests'
+					with: [ spec requires: 'ToDoListExercise-Model' ] ]
 ]
 
 { #category : #accessing }
