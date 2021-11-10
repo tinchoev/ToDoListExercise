@@ -6,15 +6,14 @@ Class {
 
 { #category : #accessing }
 BaselineOfToDoListExercise >> baseline: spec [
+
 	<baseline>
 	spec
 		for: #pharo
-		do: [ self setUpDependencies: spec.
-			spec
-				package: 'ToDoListExercise-Model'
-					with: [ spec requires: #('Aconcagua' 'Chalten' 'Buoy') ];
-				package: 'ToDoListExercise-Tests'
-					with: [ spec requires: 'ToDoListExercise-Model' ] ]
+		do: [ self
+				setUpDependenciesIn: spec;
+				setUpPackagesIn: spec
+			]
 ]
 
 { #category : #accessing }
@@ -24,24 +23,21 @@ BaselineOfToDoListExercise >> projectClass [
 ]
 
 { #category : #accessing }
-BaselineOfToDoListExercise >> setUpDependencies: spec [
+BaselineOfToDoListExercise >> setUpDependenciesIn: spec [
 
-	spec 
-		baseline: 'Aconcagua' 
-			with: [ spec repository: 'github://ba-st/Aconcagua:v8/source' ].
-
-	spec 
-		baseline: 'Chalten' 
-			with: [ spec repository: 'github://ba-st/Chalten:v8/source' ].
-	spec 
-		baseline: 'Buoy' 
-			with: [ spec repository: 'github://ba-st/Buoy:v6/source' ].
-	
 	spec
+		baseline: 'Aconcagua' with: [ spec repository: 'github://ba-st/Aconcagua:v8/source' ];
+		baseline: 'Chalten' with: [ spec repository: 'github://ba-st/Chalten:v8/source' ];
+		baseline: 'Buoy' with: [ spec repository: 'github://ba-st/Buoy:v6/source' ];
 		baseline: 'WillowBootstrap'
-			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v13/source' ].
+			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v13/source' ];
+		baseline: 'WillowSpinKit' with: [ spec repository: 'github://ba-st/Willow-SpinKit:v9/source' ]
+]
 
-	spec 
-		baseline: 'WillowSpinKit' 
-			with: [ spec repository: 'github://ba-st/Willow-SpinKit:v9/source' ].
+{ #category : #accessing }
+BaselineOfToDoListExercise >> setUpPackagesIn: spec [
+
+	spec
+		package: 'ToDoListExercise-Model' with: [ spec requires: #('Aconcagua' 'Chalten' 'Buoy') ];
+		package: 'ToDoListExercise-Tests' with: [ spec requires: 'ToDoListExercise-Model' ]
 ]
