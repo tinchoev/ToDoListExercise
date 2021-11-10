@@ -92,12 +92,11 @@ NoteTest >> testModifyEndingDate [
 
 { #category : #tests }
 NoteTest >> testReassignToAnotherEmployee [
+
 	| note |
-	note := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'Martin')
-		build.
-	self assert: note assignedEmployee equals: 'Martin' .
+
+	note := ( NoteBuilder described: 'aDescription' asignedTo: 'Martin' ) build.
+	self assert: note assignedEmployee equals: 'Martin'.
 	note reassignTo: 'Lucas'.
 	self assert: note assignedEmployee equals: 'Lucas'
 ]
