@@ -7,9 +7,7 @@ Class {
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 	| aNote |
-	aNote := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'anEmployee')
+	aNote := (NoteBuilder described: 'aDescription')
 		category: 'aCategory';
 		endingDate: 'aDate';
 		build.
@@ -20,9 +18,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 	| aNote |
-	aNote := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'anEmployee')
+	aNote := (NoteBuilder described: 'aDescription')
 		category: 'aCategory';
 		build.
 	self assert: aNote category isNotNil.
@@ -32,10 +28,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithoutCategoryAndEndingDate [
 	| aNote |
-	aNote := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'anEmployee')
-		build.
+	aNote := (NoteBuilder described: 'aDescription') build.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNil
 ]
@@ -43,9 +36,7 @@ NoteBuilerTest >> testCreateNoteWithoutCategoryAndEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithoutCategoryAndWithEndingDate [
 	| aNote |
-	aNote := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'anEmployee')
+	aNote := (NoteBuilder described: 'aDescription')
 		endingDate: 'aDate';
 		build.
 	self assert: aNote category isNil.

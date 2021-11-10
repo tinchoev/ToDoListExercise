@@ -11,13 +11,18 @@ Class {
 }
 
 { #category : #constructor }
-NoteBuilder class >> described: aDescription asignedTo: anEmployee [ 
-	^ self new initializeDescribed: aDescription asignedTo: anEmployee 
+NoteBuilder class >> described: aDescription [
+	^ self new initializeDescribed: aDescription
 ]
 
 { #category : #accessing }
 NoteBuilder >> assignedEmployee [
 	^ assignedEmployee
+]
+
+{ #category : #accessing }
+NoteBuilder >> assignedEmployee: anEmployee [
+	assignedEmployee := anEmployee
 ]
 
 { #category : #creation }
@@ -53,7 +58,9 @@ NoteBuilder >> endingDate: anEndingDate [
 ]
 
 { #category : #initialization }
-NoteBuilder >> initializeDescribed: aDescription asignedTo: anEmployee [ 
+NoteBuilder >> initializeDescribed: aDescription [ 
 	description := aDescription .
-	assignedEmployee := anEmployee
+	category := '-' .
+	endingDate := '-' .
+	assignedEmployee := '-'
 ]

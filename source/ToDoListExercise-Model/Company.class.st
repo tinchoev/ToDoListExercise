@@ -51,6 +51,6 @@ Company >> reassign: aNote to: anEmployee [
 
 { #category : #modifying }
 Company >> remove: aNote [ 
-	notes detect: [ :note | note = aNote ] ifFound: [ :note | note verifyStateIsOpen ] .
+	notes detect: [ :note | note = aNote ] ifFound: [ :note | note verifyStateIsOpen; verifyItDoesNotHaveAnEndingDate ] .
 	notes remove: aNote
 ]

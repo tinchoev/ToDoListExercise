@@ -21,7 +21,7 @@ Note class >> newFrom: aBuilder [
 	^ self new initializeWith: aBuilder
 ]
 
-{ #category : #accesing }
+{ #category : #accessing }
 Note >> assignedEmployee [
 	^ assignedEmployee
 ]
@@ -52,7 +52,19 @@ Note >> modifyEndingDateTo: aDate [
 
 { #category : #modifying }
 Note >> modifyState [
-	(state = 'open') ifTrue: [ state := 'in progress' ] ifFalse: [ (state = 'in progress') ifTrue: [ state := 'finished' ] ]
+
+	assignedEmployee
+		ifNil: [ AssertionFailed signal: 'Action failed because the note does not have an employee assigned' ].
+	state = 'open'
+		ifTrue: [ state := 'in progress' ]
+		ifFalse: [ state = 'in progress'
+				ifTrue: [ state := 'finished' ]
+			]
+]
+
+{ #category : #printing }
+Note >> printString [
+	^ 'Description: ',description,' | Category: ',category asString,' | Ending Date: ',endingDate asString,' | State: ',state asString,' | Assigned Employee: ',assignedEmployee asString
 ]
 
 { #category : #modifying }
@@ -64,6 +76,11 @@ Note >> reassignTo: anEmployee [
 { #category : #accessing }
 Note >> state [
 	^ state
+]
+
+{ #category : #asserting }
+Note >> verifyItDoesNotHaveAnEndingDate [
+	endingDate ifNotNil: [ AssertionFailed signal: 'Action failed because the note has an ending date' ]
 ]
 
 { #category : #asserting }
