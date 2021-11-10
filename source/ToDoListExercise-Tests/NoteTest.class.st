@@ -104,14 +104,13 @@ NoteTest >> testReassignToAnotherEmployee [
 
 { #category : #tests }
 NoteTest >> testState [
+
 	| note |
-	note := (NoteBuilder
-		described: 'aDescription'
-		asignedTo: 'anEmployee')
-		build.
-	self assert: note state equals: 'open' .
+
+	note := ( NoteBuilder described: 'aDescription' asignedTo: 'anEmployee' ) build.
+	self assert: note state equals: 'open'.
 	note modifyState.
-	self assert: note state equals: 'in progress' .
+	self assert: note state equals: 'in progress'.
 	note modifyState.
 	self assert: note state equals: 'finished'
 ]
