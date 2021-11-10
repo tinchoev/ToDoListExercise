@@ -12,7 +12,8 @@ BaselineOfToDoListExercise >> baseline: spec [
 		for: #pharo
 		do: [ self
 				setUpDependenciesIn: spec;
-				setUpPackagesIn: spec
+				setUpPackagesIn: spec;
+				setUpGroupsIn: spec
 			]
 ]
 
@@ -32,6 +33,18 @@ BaselineOfToDoListExercise >> setUpDependenciesIn: spec [
 		baseline: 'WillowBootstrap'
 			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v13/source' ];
 		baseline: 'WillowSpinKit' with: [ spec repository: 'github://ba-st/Willow-SpinKit:v9/source' ]
+]
+
+{ #category : #accessing }
+BaselineOfToDoListExercise >> setUpGroupsIn: spec [
+
+	spec
+		group: 'Deployment' with: #('ToDoListExercise-Model');
+		group: 'Tests' with: #('ToDoListExercise-Tests');
+		group: 'CI' with: 'Tests';
+		group: 'Tools' with: #();
+		group: 'Dependent-SUnit-Extensions' with: #();
+		group: 'Development' with: #('Tools' 'Tests')
 ]
 
 { #category : #accessing }
