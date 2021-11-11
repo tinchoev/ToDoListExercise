@@ -2,19 +2,39 @@ Class {
 	#name : #NoteCreator,
 	#superclass : #WAPainter,
 	#instVars : [
-		'description'
+		'note'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
 { #category : #constructor }
-NoteCreator class >> describedBy: aDescription [
-	^ self new initializeDescribedBy: aDescription
+NoteCreator class >> for: aNote [
+	^ self new initializeFor: aNote
+]
+
+{ #category : #accessing }
+NoteCreator >> assignedEmployee [
+	^ note assignedEmployee
+]
+
+{ #category : #accessing }
+NoteCreator >> category [
+	^ note category
+]
+
+{ #category : #accessing }
+NoteCreator >> description [
+	^ note description
+]
+
+{ #category : #accessing }
+NoteCreator >> endingDate [
+	^ note endingDate
 ]
 
 { #category : #initialization }
-NoteCreator >> initializeDescribedBy: aDescription [
-	description := aDescription 
+NoteCreator >> initializeFor: aNote [
+	note := aNote 
 ]
 
 { #category : #rendering }
@@ -24,5 +44,10 @@ NoteCreator >> renderContentOn: aCanvas [
 	itself. By convention, implementations of this method that expect a Canvas renderer
 	use 'html' as the parameter name."
 	
-	aCanvas listItem: description
+	aCanvas listItem: note description; listItem: note category
+]
+
+{ #category : #accessing }
+NoteCreator >> state [
+	^ note state
 ]

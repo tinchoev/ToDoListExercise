@@ -13,7 +13,8 @@ Class {
 		'tasks',
 		'tasksContainer',
 		'addTaskButton',
-		'taskFieldForDescriptionNote'
+		'taskFieldForNoteDescription',
+		'taskFieldForNoteCategory'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -56,14 +57,23 @@ ToDoListExerciseApplication >> componentSupplierForApplication [
 
 { #category : #rendering }
 ToDoListExerciseApplication >> configureInteractions [
-
-	taskFieldForDescriptionNote on trigger
+	| note |
+	taskFieldForNoteDescription on trigger
 		serializeIt;
 		enable: addTaskButton.
+	taskFieldForNoteCategory on trigger serializeIt.
+	note := NoteCreator
+		for:
+			((NoteBuilder described: taskFieldForNoteDescription)
+				category: taskFieldForNoteCategory;
+				build).
 	addTaskButton on trigger
 		disable;
-		serverDo: [ tasks add: ( NoteCreator describedBy: taskFieldForDescriptionNote model ) ];
-		setValueTo: [ '' ] withoutTriggeringChangeOf: taskFieldForDescriptionNote;
+		serverDo: [ tasks
+				add: note description model;
+				add: note category model ];
+		setValueTo: [ '' ]
+			withoutTriggeringChangeOf: taskFieldForNoteDescription;
 		render: tasksContainer	"employeesButton on trigger serverDo: [ :canvas | self renderEmployeesPageButtonsOn: canvas ].
 	notesButton on trigger serverDo: [ self renderNotesPageButtonsOn: canvas ]"
 ]
@@ -74,7 +84,8 @@ ToDoListExerciseApplication >> contentView [
 	^ [ :canvas | 
 	canvas heading: 'Welcome to the To Do List Exercise!';
 	render: tasksContainer ;
-	render: taskFieldForDescriptionNote;
+	render: taskFieldForNoteDescription;
+	render: taskFieldForNoteCategory ;
 	render: addTaskButton 
 "		render: employeesButton;
 		render: notesButton"
@@ -86,7 +97,8 @@ ToDoListExerciseApplication >> initialRequest: request [
 	super initialRequest: request.
 	tasks := OrderedCollection new.
 	self initializeTaskContainer.
-	self initializeTaskFieldForDescriptionNote.
+	self initializeTaskFieldForNoteDescription.
+	self initializeTaskFieldForNoteCategory .
 	self initializeAddTaskButton.
 "	self initializeButtons."
 	self configureInteractions
@@ -132,9 +144,16 @@ ToDoListExerciseApplication >> initializeTaskContainer [
 ]
 
 { #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskFieldForDescriptionNote [
+ToDoListExerciseApplication >> initializeTaskFieldForNoteCategory [
 
-	taskFieldForDescriptionNote := self componentSupplier
+	taskFieldForNoteCategory := self componentSupplier
+		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the category' ]
+]
+
+{ #category : #initialization }
+ToDoListExerciseApplication >> initializeTaskFieldForNoteDescription [
+
+	taskFieldForNoteDescription := self componentSupplier
 		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the desription' ]
 ]
 

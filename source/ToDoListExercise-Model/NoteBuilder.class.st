@@ -60,7 +60,4 @@ NoteBuilder >> endingDate: anEndingDate [
 { #category : #initialization }
 NoteBuilder >> initializeDescribed: aDescription [ 
 	description := aDescription .
-	category := '-' .
-	endingDate := '-' .
-	assignedEmployee := '-'
 ]
