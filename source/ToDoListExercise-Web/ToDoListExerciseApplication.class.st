@@ -31,6 +31,24 @@ ToDoListExerciseApplication class >> handlerName [
 ]
 
 { #category : #accessing }
+ToDoListExerciseApplication class >> start [
+
+	ToDoListExerciseApplication registerAsDevelopmentApplication.
+	( ZnZincServerAdaptor port: 8080 )
+		codec: ( GRCodec forEncoding: 'utf8' );
+		start
+]
+
+{ #category : #accessing }
+ToDoListExerciseApplication class >> stop [
+
+	ZnServer stopDefault.
+	ZnZincServerAdaptor allInstancesDo: [ :each | each shutDown ].
+	ToDoListExerciseApplication unregisterFromApplications.
+	Smalltalk garbageCollect
+]
+
+{ #category : #accessing }
 ToDoListExerciseApplication >> componentSupplierForApplication [
 
 	^ Html5ComponentSupplier new
