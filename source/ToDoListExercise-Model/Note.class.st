@@ -32,6 +32,11 @@ Note >> category [
 ]
 
 { #category : #accessing }
+Note >> description [
+	^ description
+]
+
+{ #category : #accessing }
 Note >> endingDate [
 	^ endingDate
 ]
