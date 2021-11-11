@@ -2,19 +2,13 @@ Class {
 	#name : #ToDoListExerciseApplication,
 	#superclass : #WillowApplication,
 	#instVars : [
-		'employeesButton',
-		'notesButton',
-		'createEmployeeButton',
-		'showEmployeesButton',
-		'createNoteButton',
-		'modifyNoteButton',
-		'removeNoteButton',
-		'company',
 		'tasks',
 		'tasksContainer',
 		'addTaskButton',
 		'taskFieldForNoteDescription',
-		'taskFieldForNoteCategory'
+		'taskFieldForNoteCategory',
+		'taskFieldForNoteEndingDate',
+		'taskDropdownForNoteAssignedEmployee'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -57,25 +51,26 @@ ToDoListExerciseApplication >> componentSupplierForApplication [
 
 { #category : #rendering }
 ToDoListExerciseApplication >> configureInteractions [
-	| note |
 	taskFieldForNoteDescription on trigger
 		serializeIt;
 		enable: addTaskButton.
 	taskFieldForNoteCategory on trigger serializeIt.
-	note := NoteCreator
-		for:
-			((NoteBuilder described: taskFieldForNoteDescription)
-				category: taskFieldForNoteCategory;
-				build).
+	taskFieldForNoteEndingDate on trigger serializeIt.
+	taskDropdownForNoteAssignedEmployee on trigger serializeIt .
 	addTaskButton on trigger
 		disable;
 		serverDo: [ tasks
-				add: note description model;
-				add: note category model ];
+				add:
+					(NoteTask describedBy: (((NoteBuilder describedBy: taskFieldForNoteDescription model)
+						categorizedBy: taskFieldForNoteCategory model;"
+						endingIn: taskFieldForNoteEndingDate model;
+						assignedTo: taskDropdownForNoteAssignedEmployee model;"
+						build) printString)) ];
 		setValueTo: [ '' ]
-			withoutTriggeringChangeOf: taskFieldForNoteDescription;
-		render: tasksContainer	"employeesButton on trigger serverDo: [ :canvas | self renderEmployeesPageButtonsOn: canvas ].
-	notesButton on trigger serverDo: [ self renderNotesPageButtonsOn: canvas ]"
+			thenTriggerChangeOf: taskFieldForNoteDescription;
+		setValueTo: [ '' ]
+			thenTriggerChangeOf: taskFieldForNoteCategory;
+		render: tasksContainer
 ]
 
 { #category : #accessing }
@@ -86,6 +81,8 @@ ToDoListExerciseApplication >> contentView [
 	render: tasksContainer ;
 	render: taskFieldForNoteDescription;
 	render: taskFieldForNoteCategory ;
+	render: taskFieldForNoteEndingDate ;
+	render: taskDropdownForNoteAssignedEmployee ;
 	render: addTaskButton 
 "		render: employeesButton;
 		render: notesButton"
@@ -99,6 +96,8 @@ ToDoListExerciseApplication >> initialRequest: request [
 	self initializeTaskContainer.
 	self initializeTaskFieldForNoteDescription.
 	self initializeTaskFieldForNoteCategory .
+	self initializeTaskFieldForNoteEndingDate.
+	self initializeTaskDropdownForNoteAssignedEmployee.
 	self initializeAddTaskButton.
 "	self initializeButtons."
 	self configureInteractions
@@ -109,38 +108,19 @@ ToDoListExerciseApplication >> initializeAddTaskButton [
 	addTaskButton := self componentSupplier asynchronicButtonLabeled: 'Click me' applying: [ :theButton | theButton beDisabled ]
 ]
 
-{ #category : #rendering }
-ToDoListExerciseApplication >> initializeButtons [
-	company := Company new .
-	employeesButton := self componentSupplier
-		asynchronicButtonLabeled: 'Employees'
-		applying: [ :theButton | ] .
-	notesButton := self componentSupplier
-		asynchronicButtonLabeled: 'Notes'
-		applying: [ :theButton | ] .
-	createEmployeeButton := self componentSupplier
-		asynchronicButtonLabeled: 'Create employee'
-		applying: [ :theButton | ] .
-	showEmployeesButton := self componentSupplier
-		asynchronicButtonLabeled: 'Show employees'
-		applying: [ :theButton | ] .
-	createNoteButton := self componentSupplier
-		asynchronicButtonLabeled: 'Create note'
-		applying: [ :theButton | ] .
-	modifyNoteButton := self componentSupplier
-		asynchronicButtonLabeled: 'Modify note'
-		applying: [ :theButton | ] .
-	removeNoteButton := self componentSupplier
-		asynchronicButtonLabeled: 'Remove note'
-		applying: [ :theButton | ] .
-]
-
 { #category : #initialization }
 ToDoListExerciseApplication >> initializeTaskContainer [
 
 	tasksContainer := self componentSupplier
 		divisionContainerWrapping: [ :canvas | canvas unorderedList: tasks ]
 		applying: [  ]
+]
+
+{ #category : #initialization }
+ToDoListExerciseApplication >> initializeTaskDropdownForNoteAssignedEmployee [
+
+	taskDropdownForNoteAssignedEmployee := self componentSupplier
+		dropdownListApplying: [ :theField | "theField setPlaceholderTo: 'Select an employee to be assigned'" ]
 ]
 
 { #category : #initialization }
@@ -154,7 +134,14 @@ ToDoListExerciseApplication >> initializeTaskFieldForNoteCategory [
 ToDoListExerciseApplication >> initializeTaskFieldForNoteDescription [
 
 	taskFieldForNoteDescription := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the desription' ]
+		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the description' ]
+]
+
+{ #category : #initialization }
+ToDoListExerciseApplication >> initializeTaskFieldForNoteEndingDate [
+
+	taskFieldForNoteEndingDate := self componentSupplier
+		dateFieldApplying: [ :theField | "theField setPlaceholderTo: 'Select the ending date'" ]
 ]
 
 { #category : #accessing }

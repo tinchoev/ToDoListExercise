@@ -7,9 +7,9 @@ Class {
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 	| aNote |
-	aNote := (NoteBuilder described: 'aDescription')
+	aNote := (NoteBuilder describedBy: 'aDescription')
 		category: 'aCategory';
-		endingDate: 'aDate';
+		endingIn: 'aDate';
 		build.
 	self assert: aNote category isNotNil.
 	self assert: aNote endingDate isNotNil
@@ -18,7 +18,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 	| aNote |
-	aNote := (NoteBuilder described: 'aDescription')
+	aNote := (NoteBuilder describedBy: 'aDescription')
 		category: 'aCategory';
 		build.
 	self assert: aNote category isNotNil.
@@ -28,7 +28,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithoutCategoryAndEndingDate [
 	| aNote |
-	aNote := (NoteBuilder described: 'aDescription') build.
+	aNote := (NoteBuilder describedBy: 'aDescription') build.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNil
 ]
@@ -36,8 +36,8 @@ NoteBuilerTest >> testCreateNoteWithoutCategoryAndEndingDate [
 { #category : #tests }
 NoteBuilerTest >> testCreateNoteWithoutCategoryAndWithEndingDate [
 	| aNote |
-	aNote := (NoteBuilder described: 'aDescription')
-		endingDate: 'aDate';
+	aNote := (NoteBuilder describedBy: 'aDescription')
+		endingIn: 'aDate';
 		build.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNotNil
