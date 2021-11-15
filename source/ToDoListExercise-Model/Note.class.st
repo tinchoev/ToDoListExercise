@@ -23,26 +23,31 @@ Note class >> newFrom: aBuilder [
 
 { #category : #accessing }
 Note >> assignedEmployee [
+
 	^ assignedEmployee
 ]
 
 { #category : #accessing }
 Note >> category [
+
 	^ category
 ]
 
 { #category : #accessing }
 Note >> description [
+
 	^ description
 ]
 
 { #category : #accessing }
 Note >> endingDate [
+
 	^ endingDate
 ]
 
 { #category : #initialization }
 Note >> initializeWith: aBuilder [
+
 	description := aBuilder description.
 	category := aBuilder category.
 	endingDate := aBuilder endingDate.
@@ -51,7 +56,8 @@ Note >> initializeWith: aBuilder [
 ]
 
 { #category : #modifying }
-Note >> modifyEndingDateTo: aDate [ 
+Note >> modifyEndingDateTo: aDate [
+
 	endingDate := aDate
 ]
 
@@ -69,29 +75,38 @@ Note >> modifyState [
 
 { #category : #printing }
 Note >> printString [
-	^ 'Description: ',description,' | Category: ',category asString,' | Ending Date: ',endingDate asString,' | State: ',state asString,' | Assigned Employee: ',assignedEmployee asString
+
+	^ 'Description: ' , description , ' | Category: ' , category asString , ' | Ending Date: '
+		, endingDate asString , ' | State: ' , state asString , ' | Assigned Employee: '
+		, assignedEmployee asString
 ]
 
 { #category : #modifying }
-Note >> reassignTo: anEmployee [  
-	self verifyStateIsOpen .
+Note >> reassignTo: anEmployee [
+
+	self verifyStateIsOpen.
 	assignedEmployee := anEmployee
 ]
 
 { #category : #accessing }
 Note >> state [
+
 	^ state
 ]
 
 { #category : #asserting }
 Note >> verifyItDoesNotHaveAnEndingDate [
-	endingDate ifNotNil: [ AssertionFailed signal: 'Action failed because the note has an ending date' ]
+
+	endingDate
+		ifNotNil: [ AssertionFailed signal: 'Action failed because the note has an ending date' ]
 ]
 
 { #category : #asserting }
 Note >> verifyStateIsOpen [
-	(state = 'open') 
-		ifFalse: [ (state = 'in progress') 
-			ifTrue: [ AssertionFailed signal: 'Action failed because the note is in progress' ] 
-			ifFalse: [ AssertionFailed signal: 'Action failed because the note is finished' ] ]
+
+	state = 'open'
+		ifFalse: [ state = 'in progress'
+				ifTrue: [ AssertionFailed signal: 'Action failed because the note is in progress' ]
+				ifFalse: [ AssertionFailed signal: 'Action failed because the note is finished' ]
+			]
 ]

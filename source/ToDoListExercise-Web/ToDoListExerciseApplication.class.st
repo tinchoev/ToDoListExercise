@@ -2,13 +2,10 @@ Class {
 	#name : #ToDoListExerciseApplication,
 	#superclass : #WillowApplication,
 	#instVars : [
-		'tasks',
-		'tasksContainer',
-		'addTaskButton',
-		'taskFieldForNoteDescription',
-		'taskFieldForNoteCategory',
-		'taskFieldForNoteEndingDate',
-		'taskDropdownForNoteAssignedEmployee'
+		'company',
+		'employeeRegistrationWebView',
+		'noteRegistrationWebView',
+		'noteOutputWebView'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -51,138 +48,41 @@ ToDoListExerciseApplication >> componentSupplierForApplication [
 
 { #category : #rendering }
 ToDoListExerciseApplication >> configureInteractions [
-	taskFieldForNoteDescription on trigger
-		serializeIt;
-		enable: addTaskButton.
-	taskFieldForNoteCategory on trigger serializeIt.
-	taskFieldForNoteEndingDate on trigger serializeIt.
-	taskDropdownForNoteAssignedEmployee on trigger serializeIt .
-	addTaskButton on trigger
-		disable;
-		serverDo: [ tasks
-				add:
-					(NoteTask describedBy: (((NoteBuilder describedBy: taskFieldForNoteDescription model)
-						categorizedBy: taskFieldForNoteCategory model;"
-						endingIn: taskFieldForNoteEndingDate model;
-						assignedTo: taskDropdownForNoteAssignedEmployee model;"
-						build) printString)) ];
-		setValueTo: [ '' ]
-			thenTriggerChangeOf: taskFieldForNoteDescription;
-		setValueTo: [ '' ]
-			thenTriggerChangeOf: taskFieldForNoteCategory;
-		render: tasksContainer
+
+	
 ]
 
 { #category : #accessing }
 ToDoListExerciseApplication >> contentView [
 
 	^ [ :canvas | 
-	canvas heading: 'Welcome to the To Do List Exercise!';
-	render: tasksContainer ;
-	render: taskFieldForNoteDescription;
-	render: taskFieldForNoteCategory ;
-	render: taskFieldForNoteEndingDate ;
-	render: taskDropdownForNoteAssignedEmployee ;
-	render: addTaskButton 
-"		render: employeesButton;
-		render: notesButton"
+	canvas
+		heading: 'Welcome to the To Do List Exercise!';
+		render: noteRegistrationWebView;
+		render: noteOutputWebView	" ;
+	render: employeeRegistrationWebView "
 	]
 ]
 
 { #category : #rendering }
 ToDoListExerciseApplication >> initialRequest: request [
+
 	super initialRequest: request.
-	tasks := OrderedCollection new.
-	self initializeTaskContainer.
-	self initializeTaskFieldForNoteDescription.
-	self initializeTaskFieldForNoteCategory .
-	self initializeTaskFieldForNoteEndingDate.
-	self initializeTaskDropdownForNoteAssignedEmployee.
-	self initializeAddTaskButton.
-"	self initializeButtons."
+	self initializeViews.
+	company := Company new.
 	self configureInteractions
 ]
 
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeAddTaskButton [
-	addTaskButton := self componentSupplier asynchronicButtonLabeled: 'Click me' applying: [ :theButton | theButton beDisabled ]
-]
+{ #category : #rendering }
+ToDoListExerciseApplication >> initializeViews [
 
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskContainer [
-
-	tasksContainer := self componentSupplier
-		divisionContainerWrapping: [ :canvas | canvas unorderedList: tasks ]
-		applying: [  ]
-]
-
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskDropdownForNoteAssignedEmployee [
-
-	taskDropdownForNoteAssignedEmployee := self componentSupplier
-		dropdownListApplying: [ :theField | "theField setPlaceholderTo: 'Select an employee to be assigned'" ]
-]
-
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskFieldForNoteCategory [
-
-	taskFieldForNoteCategory := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the category' ]
-]
-
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskFieldForNoteDescription [
-
-	taskFieldForNoteDescription := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the description' ]
-]
-
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeTaskFieldForNoteEndingDate [
-
-	taskFieldForNoteEndingDate := self componentSupplier
-		dateFieldApplying: [ :theField | "theField setPlaceholderTo: 'Select the ending date'" ]
+	employeeRegistrationWebView := EmployeeRegistrationWebView new.
+	noteRegistrationWebView := NoteRegistrationWebView new.
+	noteOutputWebView := NoteOutputWebView new
 ]
 
 { #category : #accessing }
 ToDoListExerciseApplication >> jQueryLibrary [
 
 	^ JQuery3OnlineLibrary default
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> renderButtonOn: aCanvas with: aMessage [
-	^ self componentSupplier
-		asynchronicButtonLabeled: aMessage
-		applying: [ :theButton | ]
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> renderEmployeesPageButtonsOn: aCanvas [
-
-	aCanvas
-		render: createEmployeeButton;
-		render: showEmployeesButton
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> renderHomepageButtonsOn: aCanvas [
-
-	aCanvas
-		render: employeesButton;
-		render: notesButton
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> renderNotesPageButtonsOn: aCanvas [
-
-	aCanvas
-		render: createNoteButton;
-		render: modifyNoteButton;
-		render: removeNoteButton
-]
-
-{ #category : #accessing }
-ToDoListExerciseApplication >> renderTasksOn: aCanvas [
-	^ aCanvas unorderedList add: PendingTask new
 ]

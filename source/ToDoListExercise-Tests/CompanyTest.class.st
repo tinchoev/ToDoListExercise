@@ -6,8 +6,10 @@ Class {
 
 { #category : #tests }
 CompanyTest >> testAddEmployee [
+
 	| company |
-	company := Company new .
+
+	company := Company new.
 	self assert: company employeesSize equals: 0.
 	company addEmployee: 'Martin'.
 	self assert: company employeesSize equals: 1
@@ -15,22 +17,26 @@ CompanyTest >> testAddEmployee [
 
 { #category : #tests }
 CompanyTest >> testAddNote [
+
 	| company |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
 	self assert: company notesSize equals: 0.
-	company addNote: (NoteBuilder describedBy: 'aDescription') build.
+	company addNote: ( NoteBuilder describedBy: 'aDescription' ) build.
 	self assert: company notesSize equals: 1
 ]
 
 { #category : #tests }
 CompanyTest >> testCantModifyStateOfNoteIfItDoesNotHaveAnEmployeeAssigned [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') build.
+	note := ( NoteBuilder describedBy: 'aDescription' ) build.
 	company addNote: note.
 	self assert: note state equals: 'open'.
 	self
@@ -41,8 +47,12 @@ CompanyTest >> testCantModifyStateOfNoteIfItDoesNotHaveAnEmployeeAssigned [
 
 { #category : #tests }
 CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
+
 	| company note |
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Mickey'; build.
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
 	company := Company new.
 	company addNote: note.
 	company modifyStateOf: note.
@@ -55,8 +65,12 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 
 { #category : #tests }
 CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
+
 	| company note |
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Mickey'; build.
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
 	company := Company new.
 	company addNote: note.
 	company modifyStateOf: note.
@@ -68,11 +82,15 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 
 { #category : #tests }
 CompanyTest >> testCantRemoveNoteBecauseItIsFinished [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Martin'; build.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
 	company addNote: note.
 	company modifyStateOf: note.
 	company modifyStateOf: note.
@@ -84,11 +102,13 @@ CompanyTest >> testCantRemoveNoteBecauseItIsFinished [
 
 { #category : #tests }
 CompanyTest >> testCantRemoveNoteBecauseItIsHasEndingDate [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription')
+	note := ( NoteBuilder describedBy: 'aDescription' )
 		endingIn: '01-01-2022' asDate;
 		build.
 	company addNote: note.
@@ -100,11 +120,15 @@ CompanyTest >> testCantRemoveNoteBecauseItIsHasEndingDate [
 
 { #category : #tests }
 CompanyTest >> testCantRemoveNoteBecauseItIsInProgress [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Martin'; build.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
 	company addNote: note.
 	company modifyStateOf: note.
 	self
@@ -115,11 +139,13 @@ CompanyTest >> testCantRemoveNoteBecauseItIsInProgress [
 
 { #category : #tests }
 CompanyTest >> testModifyEndingDateOfNote [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription')
+	note := ( NoteBuilder describedBy: 'aDescription' )
 		endingIn: '01-01-2022' asDate;
 		build.
 	company addNote: note.
@@ -130,11 +156,15 @@ CompanyTest >> testModifyEndingDateOfNote [
 
 { #category : #tests }
 CompanyTest >> testModifyStateOfNote [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Martin'; build.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
 	company addNote: note.
 	self assert: note state equals: 'open'.
 	company modifyStateOf: note.
@@ -145,12 +175,16 @@ CompanyTest >> testModifyStateOfNote [
 
 { #category : #tests }
 CompanyTest >> testReassignANoteToAnotherEmployee [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		addEmployee: 'Lucas';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') assignedTo: 'Martin'; build.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
 	company addNote: note.
 	self assert: note assignedEmployee equals: 'Martin'.
 	company reassign: note to: 'Lucas'.
@@ -159,11 +193,13 @@ CompanyTest >> testReassignANoteToAnotherEmployee [
 
 { #category : #tests }
 CompanyTest >> testRemoveNote [
+
 	| company note |
+
 	company := Company new
 		addEmployee: 'Martin';
 		yourself.
-	note := (NoteBuilder describedBy: 'aDescription') build.
+	note := ( NoteBuilder describedBy: 'aDescription' ) build.
 	company addNote: note.
 	self assert: company notesSize equals: 1.
 	company remove: note.
