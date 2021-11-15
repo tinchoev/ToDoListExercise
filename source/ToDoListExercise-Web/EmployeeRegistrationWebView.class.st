@@ -24,7 +24,15 @@ EmployeeRegistrationWebView >> configureInteractions [
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> initializeEmployeeNameField [
+EmployeeRegistrationWebView >> initialize [
+
+	self
+		initializeNameField;
+		initializeRegistrationButton
+]
+
+{ #category : #initialization }
+EmployeeRegistrationWebView >> initializeNameField [
 
 	nameField := self componentSupplier
 		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the employee''s name' ]
@@ -48,10 +56,13 @@ EmployeeRegistrationWebView >> initializeTaskContainerForEmployees [
 
 { #category : #rendering }
 EmployeeRegistrationWebView >> renderContentOn: aCanvas [
+
 	"This is the main rendering method of WAPainter. It will be called with an instance of
 	the Renderer class returned by #rendererClass whenever this Painter is asked to render
 	itself. By convention, implementations of this method that expect a Canvas renderer
 	use 'html' as the parameter name."
-	
+
 	aCanvas
+		render: nameField;
+		render: registrationButton
 ]

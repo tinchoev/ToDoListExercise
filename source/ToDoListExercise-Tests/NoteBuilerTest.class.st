@@ -35,6 +35,7 @@ NoteBuilerTest >> testCreateNoteWithoutCategoryAndEndingDate [
 	| aNote |
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' ) build.
+	self assert: aNote description equals: 'aDescription'.
 	self assert: aNote category isNil.
 	self assert: aNote endingDate isNil
 ]

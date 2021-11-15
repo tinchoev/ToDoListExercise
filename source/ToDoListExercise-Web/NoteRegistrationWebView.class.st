@@ -9,7 +9,8 @@ Class {
 		'descriptionField',
 		'categoryField',
 		'assignedEmployeeDropdown',
-		'notesRegistrationButton'
+		'notesRegistrationButton',
+		'notes'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -31,7 +32,8 @@ NoteRegistrationWebView >> configureInteractions [
 				categorizedBy: categoryField model;
 				"		endingIn: endingDateField model;
 						assignedTo: assignedEmployeeDropdown model;"
-					build
+					build.
+			notes add: note
 			];
 		setValueTo: [ '' ] thenTriggerChangeOf: descriptionField;
 		setValueTo: [ '' ] thenTriggerChangeOf: categoryField;
@@ -41,6 +43,7 @@ NoteRegistrationWebView >> configureInteractions [
 { #category : #initialization }
 NoteRegistrationWebView >> initialize [
 
+	notes := OrderedCollection new.
 	self
 		initializeRegistrationButton;
 		initializeTaskContainerForNotes;
@@ -84,7 +87,10 @@ NoteRegistrationWebView >> initializeRegistrationButton [
 
 	notesRegistrationButton := self componentSupplier
 		asynchronicButtonLabeled: 'Create note'
-		applying: [ :theButton | theButton beDisabled ]
+		applying: [ :theButton | 
+			theButton beDisabled.
+			theButton addClass bootstrap3 buttonPrimary
+			]
 ]
 
 { #category : #initialization }
@@ -93,6 +99,11 @@ NoteRegistrationWebView >> initializeTaskContainerForNotes [
 	tasksContainerForNotes := self componentSupplier
 		divisionContainerWrapping: [ :canvas | canvas unorderedList: tasksForNotes ]
 		applying: [  ]
+]
+
+{ #category : #accessing }
+NoteRegistrationWebView >> notes [
+	^ notes
 ]
 
 { #category : #rendering }

@@ -5,7 +5,8 @@ Class {
 		'company',
 		'employeeRegistrationWebView',
 		'noteRegistrationWebView',
-		'noteOutputWebView'
+		'noteOutputWebView',
+		'employeeOutoutWebView'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -59,8 +60,9 @@ ToDoListExerciseApplication >> contentView [
 	canvas
 		heading: 'Welcome to the To Do List Exercise!';
 		render: noteRegistrationWebView;
-		render: noteOutputWebView	" ;
-	render: employeeRegistrationWebView "
+		render: noteOutputWebView;
+		render: employeeRegistrationWebView;
+		render: employeeOutoutWebView 
 	]
 ]
 
@@ -77,6 +79,7 @@ ToDoListExerciseApplication >> initialRequest: request [
 ToDoListExerciseApplication >> initializeViews [
 
 	employeeRegistrationWebView := EmployeeRegistrationWebView new.
+	employeeOutoutWebView := EmployeeOutputWebView new.
 	noteRegistrationWebView := NoteRegistrationWebView new.
 	noteOutputWebView := NoteOutputWebView new
 ]
