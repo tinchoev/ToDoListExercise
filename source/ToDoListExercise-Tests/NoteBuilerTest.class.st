@@ -10,7 +10,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 	| aNote |
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		category: 'aCategory';
+		categorizedBy: 'aCategory';
 		endingIn: 'aDate';
 		build.
 	self assert: aNote category isNotNil.
@@ -23,7 +23,7 @@ NoteBuilerTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
 	| aNote |
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		category: 'aCategory';
+		categorizedBy: 'aCategory';
 		build.
 	self assert: aNote category isNotNil.
 	self assert: aNote endingDate isNil
