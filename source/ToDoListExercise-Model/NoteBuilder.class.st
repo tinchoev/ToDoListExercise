@@ -20,7 +20,7 @@ NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
 { #category : #constructor }
 NoteBuilder class >> describedBy: aDescription [
 
-	self assertDescriptionIsNotEmpty: aDescription .
+	self assertDescriptionIsNotEmpty: aDescription.
 	^ self new initializeDescribedBy: aDescription
 ]
 
@@ -33,7 +33,7 @@ NoteBuilder >> assignedEmployee [
 { #category : #modifying }
 NoteBuilder >> assignedTo: anEmployee [
 
-	assignedEmployee := anEmployee
+	assignedEmployee := UsedOptional containing: anEmployee
 ]
 
 { #category : #creation }
@@ -45,8 +45,7 @@ NoteBuilder >> build [
 { #category : #modifying }
 NoteBuilder >> categorizedBy: aCategory [
 
-	category := aCategory.
-	^ self
+	category := UsedOptional containing: aCategory
 ]
 
 { #category : #accessing }
@@ -70,12 +69,14 @@ NoteBuilder >> endingDate [
 { #category : #modifying }
 NoteBuilder >> endingIn: anEndingDate [
 
-	endingDate := anEndingDate.
-	^ self
+	endingDate := UsedOptional containing: anEndingDate
 ]
 
 { #category : #initialization }
 NoteBuilder >> initializeDescribedBy: aDescription [
 
-	description := aDescription
+	description := aDescription.
+	category := UnusedOptional explainedByAll: 'Category not assigned yet'.
+	assignedEmployee := UnusedOptional explainedByAll: 'Employee not assigned yet'.
+	endingDate := UnusedOptional explainedByAll: 'Ending date not assigned yet'
 ]

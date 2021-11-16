@@ -1,61 +1,28 @@
 Class {
-	#name : #NoteTest,
+	#name : #NoteBuilderTest,
 	#superclass : #TestCase,
 	#category : #'ToDoListExercise-Tests'
 }
 
 { #category : #tests }
-NoteTest >> testCantCreateNoteWithoutDescription [
+NoteBuilderTest >> testCantCreateNoteWithoutDescription [
 
 	self
-		should: [ Note newFrom: ( NoteBuilder describedBy: '' ) ]
+		should: [ NoteBuilder describedBy: '' ]
 		raise: AssertionFailed
 		withMessageText: 'Note couldnt be created because it didnt have description'
 ]
 
 { #category : #tests }
-NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
-		build.
-	note modifyState.
-	note modifyState.
-	self
-		should: [ note reassignTo: 'Goofy' ]
-		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is finished'
-]
-
-{ #category : #tests }
-NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
-		build.
-	note modifyState.
-	self
-		should: [ note reassignTo: 'Goofy' ]
-		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is in progress'
-]
-
-{ #category : #tests }
-NoteTest >> testCreateNoteWithAllItsAttributes [
+NoteBuilderTest >> testCreateNoteWithAllItsAttributes [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				categorizedBy: 'aCategory';
-				endingIn: 'aDate';
-				assignedTo: 'anEmployee';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		categorizedBy: 'aCategory';
+		endingIn: 'aDate';
+		assignedTo: 'anEmployee';
+		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
@@ -68,16 +35,14 @@ NoteTest >> testCreateNoteWithAllItsAttributes [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutAssignedEmployee [
+NoteBuilderTest >> testCreateNoteWithoutAssignedEmployee [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				categorizedBy: 'aCategory';
-				endingIn: 'aDate';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		categorizedBy: 'aCategory';
+		endingIn: 'aDate';
+		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
@@ -90,16 +55,14 @@ NoteTest >> testCreateNoteWithoutAssignedEmployee [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutCategory [
+NoteBuilderTest >> testCreateNoteWithoutCategory [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				endingIn: 'aDate';
-				assignedTo: 'anEmployee';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		endingIn: 'aDate';
+		assignedTo: 'anEmployee';
+		build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
@@ -112,15 +75,13 @@ NoteTest >> testCreateNoteWithoutCategory [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
+NoteBuilderTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				endingIn: 'aDate';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		endingIn: 'aDate';
+		build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
@@ -133,15 +94,13 @@ NoteTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutCategoryAndEndingDate [
+NoteBuilderTest >> testCreateNoteWithoutCategoryAndEndingDate [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				assignedTo: 'anEmployee';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'anEmployee';
+		build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
@@ -154,11 +113,11 @@ NoteTest >> testCreateNoteWithoutCategoryAndEndingDate [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutCategoryEndingDateAndAssignedEmployee [
+NoteBuilderTest >> testCreateNoteWithoutCategoryEndingDateAndAssignedEmployee [
 
 	| aNote |
 
-	aNote := Note newFrom: ( NoteBuilder describedBy: 'aDescription' ) build.
+	aNote := ( NoteBuilder describedBy: 'aDescription' ) build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
@@ -171,16 +130,14 @@ NoteTest >> testCreateNoteWithoutCategoryEndingDateAndAssignedEmployee [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutEndingDate [
+NoteBuilderTest >> testCreateNoteWithoutEndingDate [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				categorizedBy: 'aCategory';
-				assignedTo: 'anEmployee';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		categorizedBy: 'aCategory';
+		assignedTo: 'anEmployee';
+		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
@@ -193,15 +150,13 @@ NoteTest >> testCreateNoteWithoutEndingDate [
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutEndingDateAndAssignedEmployee [
+NoteBuilderTest >> testCreateNoteWithoutEndingDateAndAssignedEmployee [
 
 	| aNote |
 
-	aNote := Note
-		newFrom:
-			( ( NoteBuilder describedBy: 'aDescription' )
-				categorizedBy: 'aCategory';
-				build ).
+	aNote := ( NoteBuilder describedBy: 'aDescription' )
+		categorizedBy: 'aCategory';
+		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
@@ -211,50 +166,4 @@ NoteTest >> testCreateNoteWithoutEndingDateAndAssignedEmployee [
 	aNote assignedEmployee
 		withContentDo: [ self fail ]
 		ifUnused: [ :employee | self assert: employee equals: 'Employee not assigned yet' ]
-]
-
-{ #category : #tests }
-NoteTest >> testModifyEndingDate [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: '01-01-2022' asDate;
-		build.
-
-	note endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: '01-01-2022' asDate ]
-		ifUnused: [ self fail ].
-	note modifyEndingDateTo: '02-02-2022' asDate.
-	note endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: '02-02-2022' asDate ]
-		ifUnused: [ self fail ]
-]
-
-{ #category : #tests }
-NoteTest >> testReassignToAnotherEmployee [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Martin';
-		build.
-	self assert: note assignedEmployee equals: 'Martin'.
-	note reassignTo: 'Lucas'.
-	self assert: note assignedEmployee equals: 'Lucas'
-]
-
-{ #category : #tests }
-NoteTest >> testState [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
-		build.
-	self assert: note state equals: 'open'.
-	note modifyState.
-	self assert: note state equals: 'in progress'.
-	note modifyState.
-	self assert: note state equals: 'finished'
 ]

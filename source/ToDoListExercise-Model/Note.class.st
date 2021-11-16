@@ -58,7 +58,7 @@ Note >> initializeWith: aBuilder [
 { #category : #modifying }
 Note >> modifyEndingDateTo: aDate [
 
-	endingDate := aDate
+	endingDate := endingDate withContentDo: [ aDate ] ifUnused: [ UsedOptional containing: aDate ]
 ]
 
 { #category : #modifying }
