@@ -39,7 +39,7 @@ BaselineOfToDoListExercise >> setUpDependenciesIn: spec [
 BaselineOfToDoListExercise >> setUpGroupsIn: spec [
 
 	spec
-		group: 'Deployment' with: #('ToDoListExercise-Model');
+		group: 'Deployment' with: #('ToDoListExercise-Model' 'ToDoListExercise-Web');
 		group: 'Tests' with: #('ToDoListExercise-Tests');
 		group: 'CI' with: 'Tests';
 		group: 'Tools' with: #();
@@ -52,5 +52,6 @@ BaselineOfToDoListExercise >> setUpPackagesIn: spec [
 
 	spec
 		package: 'ToDoListExercise-Model' with: [ spec requires: #('Aconcagua' 'Chalten' 'Buoy') ];
-		package: 'ToDoListExercise-Tests' with: [ spec requires: 'ToDoListExercise-Model' ]
+		package: 'ToDoListExercise-Tests' with: [ spec requires: 'ToDoListExercise-Model' ];
+		package: 'ToDoListExercise-Web' with: [ spec requires: 'ToDoListExercise-Model' ]
 ]
