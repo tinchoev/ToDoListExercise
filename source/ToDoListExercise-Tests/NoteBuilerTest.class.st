@@ -5,6 +5,15 @@ Class {
 }
 
 { #category : #tests }
+NoteBuilerTest >> testCantCreateNoteWithoutDescription [
+
+	self
+		should: [ NoteBuilder describedBy: '' ]
+		raise: AssertionFailed
+		withMessageText: 'Note couldnt be created because it didnt have description'
+]
+
+{ #category : #tests }
 NoteBuilerTest >> testCreateNoteWithCategoryAndEndingDate [
 
 	| aNote |

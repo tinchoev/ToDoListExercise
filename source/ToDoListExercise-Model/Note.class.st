@@ -73,14 +73,6 @@ Note >> modifyState [
 			]
 ]
 
-{ #category : #printing }
-Note >> printString [
-
-	^ 'Description: ' , description , ' | Category: ' , category asString , ' | Ending Date: '
-		, endingDate asString , ' | State: ' , state asString , ' | Assigned Employee: '
-		, assignedEmployee asString
-]
-
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 

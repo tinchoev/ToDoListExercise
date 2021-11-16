@@ -10,8 +10,17 @@ Class {
 	#category : #'ToDoListExercise-Model'
 }
 
+{ #category : #asserting }
+NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
+
+	aDescription isEmpty
+		ifTrue: [ AssertionFailed signal: 'Note couldnt be created because it didnt have description' ]
+]
+
 { #category : #constructor }
 NoteBuilder class >> describedBy: aDescription [
+
+	self assertDescriptionIsNotEmpty: aDescription .
 	^ self new initializeDescribedBy: aDescription
 ]
 
