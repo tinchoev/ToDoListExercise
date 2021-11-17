@@ -20,14 +20,14 @@ NoteBuilderTest >> testCreateNoteWithAllItsAttributes [
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
 		categorizedBy: 'aCategory';
-		endingIn: 'aDate';
+		endingIn: January first , 2022;
 		assignedTo: 'anEmployee';
 		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
 	aNote endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: 'aDate' ]
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
 		ifUnused: [ self fail ].
 	aNote assignedEmployee
 		withContentDo: [ :employee | self assert: employee equals: 'anEmployee' ]
@@ -41,13 +41,13 @@ NoteBuilderTest >> testCreateNoteWithoutAssignedEmployee [
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
 		categorizedBy: 'aCategory';
-		endingIn: 'aDate';
+		endingIn: January first , 2022;
 		build.
 	aNote category
 		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
 		ifUnused: [ self fail ].
 	aNote endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: 'aDate' ]
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
 		ifUnused: [ self fail ].
 	aNote assignedEmployee
 		withContentDo: [ self fail ]
@@ -60,14 +60,14 @@ NoteBuilderTest >> testCreateNoteWithoutCategory [
 	| aNote |
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: 'aDate';
+		endingIn: January first , 2022;
 		assignedTo: 'anEmployee';
 		build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
 	aNote endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: 'aDate' ]
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
 		ifUnused: [ self fail ].
 	aNote assignedEmployee
 		withContentDo: [ :employee | self assert: employee equals: 'anEmployee' ]
@@ -80,13 +80,13 @@ NoteBuilderTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
 	| aNote |
 
 	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: 'aDate';
+		endingIn: January first , 2022;
 		build.
 	aNote category
 		withContentDo: [ self fail ]
 		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
 	aNote endingDate
-		withContentDo: [ :endingDate | self assert: endingDate equals: 'aDate' ]
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
 		ifUnused: [ self fail ].
 	aNote assignedEmployee
 		withContentDo: [ self fail ]

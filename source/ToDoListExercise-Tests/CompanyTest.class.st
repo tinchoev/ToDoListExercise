@@ -111,7 +111,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsHasEndingDate [
 		addEmployee: 'Martin';
 		yourself.
 	note := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: '01-01-2022' asDate;
+		endingIn: January first , 2022;
 		build.
 	company addNote: note.
 	self
@@ -148,15 +148,15 @@ CompanyTest >> testModifyEndingDateOfNote [
 		addEmployee: 'Martin';
 		yourself.
 	note := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: '01-01-2022' asDate;
+		endingIn: January first , 2022;
 		build.
 	company addNote: note.
 	note endingDate
-		withContentDo: [ :aDate | self assert: aDate equals: '01-01-2022' asDate ]
+		withContentDo: [ :aDate | self assert: aDate equals: January first , 2022 ]
 		ifUnused: [ self fail ].
-	company modifyEndingDateOf: note To: '02-02-2022' asDate.
+	company modifyEndingDateOf: note To: January second , 2022.
 	note endingDate
-		withContentDo: [ :aDate | self assert: aDate equals: '02-02-2022' asDate ]
+		withContentDo: [ :aDate | self assert: aDate equals: January second , 2022 ]
 		ifUnused: [ self fail ]
 ]
 
