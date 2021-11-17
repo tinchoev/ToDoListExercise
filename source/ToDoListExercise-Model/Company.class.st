@@ -20,15 +20,31 @@ Company >> addNote: aNote [
 	notes add: aNote
 ]
 
+{ #category : #asserting }
+Company >> assertEmployeeIsLoaded: anEmployee for: anAction [
+
+	( employees includes: anEmployee )
+		ifFalse: [ AssertionFailed signal: ( 'Cant <1s> because the employee isnt loaded' expandMacrosWith: anAction ) ]
+]
+
+{ #category : #asserting }
+Company >> assertNoteIsLoaded: aNote for: anAction [
+
+	( notes includes: aNote )
+		ifFalse: [ AssertionFailed signal: ( 'Cant <1s> because the note isnt loaded' expandMacrosWith: anAction ) ]
+]
+
 { #category : #modifying }
 Company >> beFinished: aNote [
 
+	self assertNoteIsLoaded: aNote for: 'modify state to ''finished'''.
 	aNote beFinished
 ]
 
 { #category : #modifying }
 Company >> beInProgress: aNote [
 
+	self assertNoteIsLoaded: aNote for: 'modify state to ''in progress'''.
 	aNote beInProgress
 ]
 
@@ -60,7 +76,8 @@ Company >> initialize [
 { #category : #modifying }
 Company >> modifyEndingDateOf: aNote To: aDate [
 
-	notes detect: [ :note | note = aNote ] ifFound: [ :note | note modifyEndingDateTo: aDate ]
+	self assertNoteIsLoaded: aNote for: 'modify ending date'.
+	aNote modifyEndingDateTo: aDate
 ]
 
 { #category : #accessing }
@@ -72,18 +89,17 @@ Company >> notesSize [
 { #category : #modifying }
 Company >> reassign: aNote to: anEmployee [
 
-	notes detect: [ :note | note = aNote ] ifFound: [ :note | note reassignTo: anEmployee ]
+	self assertNoteIsLoaded: aNote for: 'reassign to another employee'.
+	self assertEmployeeIsLoaded: anEmployee for: 'reassign note'.
+	aNote reassignTo: anEmployee
 ]
 
 { #category : #modifying }
 Company >> remove: aNote [
 
-	notes
-		detect: [ :note | note = aNote ]
-		ifFound: [ :note | 
-			note
-				assertStateIsOpenFor: 'remove';
-				assertNoteDoesntHaveAnEndingDate
-			].
+	self assertNoteIsLoaded: aNote for: 'remove note'.
+	aNote
+		assertStateIsNotInProgressNorFinishedFor: 'remove';
+		assertNoteDoesntHaveAnEndingDate.
 	notes remove: aNote
 ]

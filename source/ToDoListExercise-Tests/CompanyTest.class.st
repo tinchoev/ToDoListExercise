@@ -29,6 +29,26 @@ CompanyTest >> testAddNote [
 ]
 
 { #category : #tests }
+CompanyTest >> testCantModifyEndingDateOfANoteThatIsntLoaded [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		endingIn: January first , 2022;
+		build.
+	note endingDate
+		withContentDo: [ :aDate | self assert: aDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	self
+		should: [ company modifyEndingDateOf: note To: January second , 2022 ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify ending date because the note isnt loaded'
+]
+
+{ #category : #tests }
 CompanyTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigned [
 
 	| company note |
@@ -50,6 +70,41 @@ CompanyTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigne
 ]
 
 { #category : #tests }
+CompanyTest >> testCantModifyStateOfNoteThatIsntLoaded [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' ) build.
+	self assert: note state equals: 'open'.
+	self
+		should: [ company beInProgress: note ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state to ''in progress'' because the note isnt loaded'.
+	self
+		should: [ company beFinished: note ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state to ''finished'' because the note isnt loaded'
+]
+
+{ #category : #tests }
+CompanyTest >> testCantReassignANoteThatIsntLoaded [
+
+	| company note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	company := Company new.
+	self
+		should: [ company reassign: note to: 'Goofy' ]
+		raise: AssertionFailed
+		withMessageText: 'Cant reassign to another employee because the note isnt loaded'
+]
+
+{ #category : #tests }
 CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 
 	| company note |
@@ -59,6 +114,7 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 		build.
 	company := Company new.
 	company addNote: note.
+	company addEmployee: 'Goofy'.
 	company beFinished: note.
 	self
 		should: [ company reassign: note to: 'Goofy' ]
@@ -76,11 +132,45 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 		build.
 	company := Company new.
 	company addNote: note.
+	company addEmployee: 'Goofy'.
 	company beInProgress: note.
 	self
 		should: [ company reassign: note to: 'Goofy' ]
 		raise: AssertionFailed
 		withMessageText: 'Cant reassign note because it is in progress'
+]
+
+{ #category : #tests }
+CompanyTest >> testCantReassignNoteToAnotherEmployeeThatIsntLoaded [
+
+	| company note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	company := Company new.
+	company addNote: note.
+	self
+		should: [ company reassign: note to: 'Goofy' ]
+		raise: AssertionFailed
+		withMessageText: 'Cant reassign note because the employee isnt loaded'
+]
+
+{ #category : #tests }
+CompanyTest >> testCantRemoveANoteThatIsntLoaded [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	self
+		should: [ company remove: note ]
+		raise: AssertionFailed
+		withMessageText: 'Cant remove note because the note isnt loaded'
 ]
 
 { #category : #tests }

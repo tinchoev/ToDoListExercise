@@ -30,7 +30,7 @@ Note >> assertNoteDoesntHaveAnEndingDate [
 ]
 
 { #category : #asserting }
-Note >> assertStateIsOpenFor: aMethod [
+Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
 
 	state = 'open'
 		ifFalse: [ state = 'in progress'
@@ -106,7 +106,7 @@ Note >> modifyEndingDateTo: aDate [
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 
-	self assertStateIsOpenFor: 'reassign'.
+	self assertStateIsNotInProgressNorFinishedFor: 'reassign'.
 	assignedEmployee := Optional containing: anEmployee
 ]
 
