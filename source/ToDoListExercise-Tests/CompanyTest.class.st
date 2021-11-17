@@ -63,7 +63,7 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 	self
 		should: [ company reassign: note to: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is finished'
+		withMessageText: 'Cant reassign note because it is finished'
 ]
 
 { #category : #tests }
@@ -80,7 +80,7 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 	self
 		should: [ company reassign: note to: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is in progress'
+		withMessageText: 'Cant reassign note because it is in progress'
 ]
 
 { #category : #tests }
@@ -99,7 +99,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsFinished [
 	self
 		should: [ company remove: note ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is finished'
+		withMessageText: 'Cant remove note because it is finished'
 ]
 
 { #category : #tests }
@@ -136,7 +136,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsInProgress [
 	self
 		should: [ company remove: note ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is in progress'
+		withMessageText: 'Cant remove note because it is in progress'
 ]
 
 { #category : #tests }

@@ -82,8 +82,8 @@ Company >> remove: aNote [
 		detect: [ :note | note = aNote ]
 		ifFound: [ :note | 
 			note
-				verifyStateIsOpen;
-				verifyItDoesNotHaveAnEndingDate
+				assertStateIsOpenFor: 'remove';
+				assertNoteDoesntHaveAnEndingDate
 			].
 	notes remove: aNote
 ]

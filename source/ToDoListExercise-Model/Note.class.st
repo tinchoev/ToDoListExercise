@@ -21,6 +21,24 @@ Note class >> newFrom: aBuilder [
 	^ self new initializeWith: aBuilder
 ]
 
+{ #category : #asserting }
+Note >> assertNoteDoesntHaveAnEndingDate [
+
+	endingDate
+		withContentDo: [ AssertionFailed signal: 'Cant remove the note because it has an ending date' ]
+		ifUnused: [  ]
+]
+
+{ #category : #asserting }
+Note >> assertStateIsOpenFor: aMethod [
+
+	state = 'open'
+		ifFalse: [ state = 'in progress'
+				ifTrue: [ AssertionFailed signal: ( 'Cant <1s> note because it is in progress' expandMacrosWith: aMethod ) ]
+				ifFalse: [ AssertionFailed signal: ( 'Cant <1s> note because it is finished' expandMacrosWith: aMethod ) ]
+			]
+]
+
 { #category : #accessing }
 Note >> assignedEmployee [
 
@@ -88,7 +106,7 @@ Note >> modifyEndingDateTo: aDate [
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 
-	self verifyStateIsOpen.
+	self assertStateIsOpenFor: 'reassign'.
 	assignedEmployee := Optional containing: anEmployee
 ]
 
@@ -96,22 +114,4 @@ Note >> reassignTo: anEmployee [
 Note >> state [
 
 	^ state
-]
-
-{ #category : #asserting }
-Note >> verifyItDoesNotHaveAnEndingDate [
-
-	endingDate
-		withContentDo: [ AssertionFailed signal: 'Cant remove the note because it has an ending date' ]
-		ifUnused: [  ]
-]
-
-{ #category : #asserting }
-Note >> verifyStateIsOpen [
-
-	state = 'open'
-		ifFalse: [ state = 'in progress'
-				ifTrue: [ AssertionFailed signal: 'Action failed because the note is in progress' ]
-				ifFalse: [ AssertionFailed signal: 'Action failed because the note is finished' ]
-			]
 ]

@@ -42,7 +42,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is finished'
+		withMessageText: 'Cant reassign note because it is finished'
 ]
 
 { #category : #tests }
@@ -57,7 +57,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is in progress'
+		withMessageText: 'Cant reassign note because it is in progress'
 ]
 
 { #category : #tests }
