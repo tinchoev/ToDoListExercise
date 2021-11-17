@@ -20,6 +20,24 @@ Company >> addNote: aNote [
 	notes add: aNote
 ]
 
+{ #category : #modifying }
+Company >> beFinished: aNote [
+
+	aNote beFinished
+]
+
+{ #category : #modifying }
+Company >> beInProgress: aNote [
+
+	aNote beInProgress
+]
+
+{ #category : #modifying }
+Company >> beOpen: aNote [
+
+	aNote beOpen
+]
+
 { #category : #accessing }
 Company >> employees [
 
@@ -43,12 +61,6 @@ Company >> initialize [
 Company >> modifyEndingDateOf: aNote To: aDate [
 
 	notes detect: [ :note | note = aNote ] ifFound: [ :note | note modifyEndingDateTo: aDate ]
-]
-
-{ #category : #modifying }
-Company >> modifyStateOf: aNote [
-
-	notes detect: [ :note | note = aNote ] ifFound: [ :note | note modifyState ]
 ]
 
 { #category : #accessing }

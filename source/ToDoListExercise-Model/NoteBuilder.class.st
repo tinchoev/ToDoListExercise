@@ -33,7 +33,7 @@ NoteBuilder >> assignedEmployee [
 { #category : #modifying }
 NoteBuilder >> assignedTo: anEmployee [
 
-	assignedEmployee := UsedOptional containing: anEmployee
+	assignedEmployee := Optional containing: anEmployee
 ]
 
 { #category : #creation }
@@ -45,7 +45,7 @@ NoteBuilder >> build [
 { #category : #modifying }
 NoteBuilder >> categorizedBy: aCategory [
 
-	category := UsedOptional containing: aCategory
+	category := Optional containing: aCategory
 ]
 
 { #category : #accessing }
@@ -69,14 +69,14 @@ NoteBuilder >> endingDate [
 { #category : #modifying }
 NoteBuilder >> endingIn: anEndingDate [
 
-	endingDate := UsedOptional containing: anEndingDate
+	endingDate := Optional containing: anEndingDate
 ]
 
 { #category : #initialization }
 NoteBuilder >> initializeDescribedBy: aDescription [
 
 	description := aDescription.
-	category := UnusedOptional explainedByAll: 'Category not assigned yet'.
-	assignedEmployee := UnusedOptional explainedByAll: 'Employee not assigned yet'.
-	endingDate := UnusedOptional explainedByAll: 'Ending date not assigned yet'
+	category := Optional unusedBecauseAll: 'Category not assigned yet'.
+	assignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
+	endingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'
 ]

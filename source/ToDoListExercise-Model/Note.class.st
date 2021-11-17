@@ -27,6 +27,30 @@ Note >> assignedEmployee [
 	^ assignedEmployee
 ]
 
+{ #category : #modifying }
+Note >> beFinished [
+
+	assignedEmployee
+		withContentDo: [ state := 'finished' ]
+		ifUnused:
+			[ AssertionFailed signal: 'Cant modify state of note to ''finished'' because it does not have an employee assigned' ]
+]
+
+{ #category : #modifying }
+Note >> beInProgress [
+
+	assignedEmployee
+		withContentDo: [ state := 'in progress' ]
+		ifUnused:
+			[ AssertionFailed signal: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned' ]
+]
+
+{ #category : #modifying }
+Note >> beOpen [
+
+	state := 'open'
+]
+
 { #category : #accessing }
 Note >> category [
 
@@ -58,26 +82,14 @@ Note >> initializeWith: aBuilder [
 { #category : #modifying }
 Note >> modifyEndingDateTo: aDate [
 
-	endingDate := endingDate withContentDo: [ aDate ] ifUnused: [ UsedOptional containing: aDate ]
-]
-
-{ #category : #modifying }
-Note >> modifyState [
-
-	assignedEmployee
-		ifNil: [ AssertionFailed signal: 'Action failed because the note does not have an employee assigned' ].
-	state = 'open'
-		ifTrue: [ state := 'in progress' ]
-		ifFalse: [ state = 'in progress'
-				ifTrue: [ state := 'finished' ]
-			]
+	endingDate := Optional containing: aDate
 ]
 
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 
 	self verifyStateIsOpen.
-	assignedEmployee := anEmployee
+	assignedEmployee := Optional containing: anEmployee
 ]
 
 { #category : #accessing }
@@ -90,7 +102,8 @@ Note >> state [
 Note >> verifyItDoesNotHaveAnEndingDate [
 
 	endingDate
-		ifNotNil: [ AssertionFailed signal: 'Action failed because the note has an ending date' ]
+		withContentDo: [ AssertionFailed signal: 'Cant remove the note because it has an ending date' ]
+		ifUnused: [  ]
 ]
 
 { #category : #asserting }

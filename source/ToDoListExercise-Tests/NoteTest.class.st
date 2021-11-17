@@ -14,6 +14,23 @@ NoteTest >> testCantCreateNoteWithoutDescription [
 ]
 
 { #category : #tests }
+NoteTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigned [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' ) build.
+	self assert: note state equals: 'open'.
+	self
+		should: [ note beInProgress ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned'.
+	self
+		should: [ note beFinished ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state of note to ''finished'' because it does not have an employee assigned'
+]
+
+{ #category : #tests }
 NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 
 	| note |
@@ -21,8 +38,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 	note := ( NoteBuilder describedBy: 'aDescription' )
 		assignedTo: 'Mickey';
 		build.
-	note modifyState.
-	note modifyState.
+	note beFinished.
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
@@ -37,7 +53,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 	note := ( NoteBuilder describedBy: 'aDescription' )
 		assignedTo: 'Mickey';
 		build.
-	note modifyState.
+	note beInProgress.
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
@@ -86,7 +102,7 @@ NoteTest >> testCreateNoteWithoutAssignedEmployee [
 		ifUnused: [ self fail ].
 	aNote assignedEmployee
 		withContentDo: [ self fail ]
-		ifUnused: [ :employee | self assert: employee equals: 'Employee not assigned yet' ]
+		ifUnused: [ :explanations | self assert: explanations equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -232,20 +248,7 @@ NoteTest >> testModifyEndingDate [
 ]
 
 { #category : #tests }
-NoteTest >> testReassignToAnotherEmployee [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Martin';
-		build.
-	self assert: note assignedEmployee equals: 'Martin'.
-	note reassignTo: 'Lucas'.
-	self assert: note assignedEmployee equals: 'Lucas'
-]
-
-{ #category : #tests }
-NoteTest >> testState [
+NoteTest >> testModifyStateFromFinishedToInProgress [
 
 	| note |
 
@@ -253,8 +256,96 @@ NoteTest >> testState [
 		assignedTo: 'Mickey';
 		build.
 	self assert: note state equals: 'open'.
-	note modifyState.
+	note beFinished.
+	self assert: note state equals: 'finished'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromFinishedToOpen [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	self assert: note state equals: 'open'.
+	note beFinished.
+	self assert: note state equals: 'finished'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromInProgressToFinished [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
 	self assert: note state equals: 'in progress'.
-	note modifyState.
+	note beFinished.
 	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromInProgressToOpen [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'.
+	note beOpen.
+	self assert: note state equals: 'open'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromOpenToFinished [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	self assert: note state equals: 'open'.
+	note beFinished.
+	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromOpenToInProgress [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Mickey';
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+NoteTest >> testReassignToAnotherEmployee [
+
+	| note |
+
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Martin' ]
+		ifUnused: [ self fail ].
+	note reassignTo: 'Lucas'.
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Lucas' ]
+		ifUnused: [ self fail ]
 ]

@@ -29,7 +29,7 @@ CompanyTest >> testAddNote [
 ]
 
 { #category : #tests }
-CompanyTest >> testCantModifyStateOfNoteIfItDoesNotHaveAnEmployeeAssigned [
+CompanyTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigned [
 
 	| company note |
 
@@ -40,9 +40,13 @@ CompanyTest >> testCantModifyStateOfNoteIfItDoesNotHaveAnEmployeeAssigned [
 	company addNote: note.
 	self assert: note state equals: 'open'.
 	self
-		should: [ company modifyStateOf: note ]
+		should: [ company beInProgress: note ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note does not have an employee assigned'
+		withMessageText: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned'.
+	self
+		should: [ company beFinished: note ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state of note to ''finished'' because it does not have an employee assigned'
 ]
 
 { #category : #tests }
@@ -55,8 +59,7 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 		build.
 	company := Company new.
 	company addNote: note.
-	company modifyStateOf: note.
-	company modifyStateOf: note.
+	company beFinished: note.
 	self
 		should: [ company reassign: note to: 'Goofy' ]
 		raise: AssertionFailed
@@ -73,7 +76,7 @@ CompanyTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 		build.
 	company := Company new.
 	company addNote: note.
-	company modifyStateOf: note.
+	company beInProgress: note.
 	self
 		should: [ company reassign: note to: 'Goofy' ]
 		raise: AssertionFailed
@@ -92,8 +95,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsFinished [
 		assignedTo: 'Martin';
 		build.
 	company addNote: note.
-	company modifyStateOf: note.
-	company modifyStateOf: note.
+	company beFinished: note.
 	self
 		should: [ company remove: note ]
 		raise: AssertionFailed
@@ -115,7 +117,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsHasEndingDate [
 	self
 		should: [ company remove: note ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note has an ending date'
+		withMessageText: 'Cant remove the note because it has an ending date'
 ]
 
 { #category : #tests }
@@ -130,7 +132,7 @@ CompanyTest >> testCantRemoveNoteBecauseItIsInProgress [
 		assignedTo: 'Martin';
 		build.
 	company addNote: note.
-	company modifyStateOf: note.
+	company beInProgress: note.
 	self
 		should: [ company remove: note ]
 		raise: AssertionFailed
@@ -149,13 +151,17 @@ CompanyTest >> testModifyEndingDateOfNote [
 		endingIn: '01-01-2022' asDate;
 		build.
 	company addNote: note.
-	self assert: note endingDate equals: '01-01-2022' asDate.
+	note endingDate
+		withContentDo: [ :aDate | self assert: aDate equals: '01-01-2022' asDate ]
+		ifUnused: [ self fail ].
 	company modifyEndingDateOf: note To: '02-02-2022' asDate.
-	self assert: note endingDate equals: '02-02-2022' asDate
+	note endingDate
+		withContentDo: [ :aDate | self assert: aDate equals: '02-02-2022' asDate ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
-CompanyTest >> testModifyStateOfNote [
+CompanyTest >> testModifyStateFromFinishedToInProgress [
 
 	| company note |
 
@@ -167,10 +173,101 @@ CompanyTest >> testModifyStateOfNote [
 		build.
 	company addNote: note.
 	self assert: note state equals: 'open'.
-	company modifyStateOf: note.
+	company beFinished: note.
+	self assert: note state equals: 'finished'.
+	company beInProgress: note.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+CompanyTest >> testModifyStateFromFinishedToOpen [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	company addNote: note.
+	self assert: note state equals: 'open'.
+	company beFinished: note.
+	self assert: note state equals: 'finished'.
+	company beOpen: note.
+	self assert: note state equals: 'open'
+]
+
+{ #category : #tests }
+CompanyTest >> testModifyStateFromInProgressToFinished [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	company addNote: note.
+	self assert: note state equals: 'open'.
+	company beInProgress: note.
 	self assert: note state equals: 'in progress'.
-	company modifyStateOf: note.
+	company beFinished: note.
 	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+CompanyTest >> testModifyStateFromInProgressToOpen [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	company addNote: note.
+	self assert: note state equals: 'open'.
+	company beInProgress: note.
+	self assert: note state equals: 'in progress'.
+	company beOpen: note.
+	self assert: note state equals: 'open'
+]
+
+{ #category : #tests }
+CompanyTest >> testModifyStateFromOpenToFinished [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	company addNote: note.
+	self assert: note state equals: 'open'.
+	company beFinished: note.
+	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+CompanyTest >> testModifyStateFromOpenToInProgress [
+
+	| company note |
+
+	company := Company new
+		addEmployee: 'Martin';
+		yourself.
+	note := ( NoteBuilder describedBy: 'aDescription' )
+		assignedTo: 'Martin';
+		build.
+	company addNote: note.
+	self assert: note state equals: 'open'.
+	company beInProgress: note.
+	self assert: note state equals: 'in progress'
 ]
 
 { #category : #tests }
@@ -186,9 +283,13 @@ CompanyTest >> testReassignANoteToAnotherEmployee [
 		assignedTo: 'Martin';
 		build.
 	company addNote: note.
-	self assert: note assignedEmployee equals: 'Martin'.
-	company reassign: note to: 'Lucas'.
-	self assert: note assignedEmployee equals: 'Lucas'
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Martin' ]
+		ifUnused: [ self fail ].
+	note reassignTo: 'Lucas'.
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Lucas' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
