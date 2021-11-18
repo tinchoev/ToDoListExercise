@@ -31,8 +31,9 @@ NoteBuilder >> assignedEmployee [
 ]
 
 { #category : #modifying }
-NoteBuilder >> assignedTo: anEmployee [
+NoteBuilder >> assignedTo: anEmployee from: anEmployeesRepository [
 
+	anEmployeesRepository assertIsLoaded: anEmployee for: 'create note'.
 	assignedEmployee := Optional containing: anEmployee
 ]
 

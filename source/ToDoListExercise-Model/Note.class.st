@@ -30,13 +30,18 @@ Note >> assertNoteDoesntHaveAnEndingDate [
 ]
 
 { #category : #asserting }
+Note >> assertStateIsNot: aState for: aMethod [
+
+	state = aState
+		ifTrue: [ AssertionFailed signal: ( 'Cant <1s> note because it is <2s>' expandMacrosWith: aMethod with: aState ) ]
+]
+
+{ #category : #asserting }
 Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
 
-	state = 'open'
-		ifFalse: [ state = 'in progress'
-				ifTrue: [ AssertionFailed signal: ( 'Cant <1s> note because it is in progress' expandMacrosWith: aMethod ) ]
-				ifFalse: [ AssertionFailed signal: ( 'Cant <1s> note because it is finished' expandMacrosWith: aMethod ) ]
-			]
+	self
+		assertStateIsNot: 'in progress' for: aMethod;
+		assertStateIsNot: 'finished' for: aMethod
 ]
 
 { #category : #accessing }
@@ -88,13 +93,13 @@ Note >> endingDate [
 ]
 
 { #category : #initialization }
-Note >> initializeWith: aBuilder [
+Note >> initializeWith: aNoteBuild [
 
-	description := aBuilder description.
-	category := aBuilder category.
-	endingDate := aBuilder endingDate.
+	description := aNoteBuild description.
+	category := aNoteBuild category.
+	endingDate := aNoteBuild endingDate.
 	state := 'open'.
-	assignedEmployee := aBuilder assignedEmployee
+	assignedEmployee := aNoteBuild assignedEmployee
 ]
 
 { #category : #modifying }
