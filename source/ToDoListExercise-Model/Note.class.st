@@ -21,10 +21,57 @@ Note class >> newFrom: aBuilder [
 	^ self new initializeWith: aBuilder
 ]
 
+{ #category : #asserting }
+Note >> assertNoteDoesntHaveAnEndingDate [
+
+	endingDate
+		withContentDo: [ AssertionFailed signal: 'Cant remove the note because it has an ending date' ]
+		ifUnused: [  ]
+]
+
+{ #category : #asserting }
+Note >> assertStateIsNot: aState for: aMethod [
+
+	state = aState
+		ifTrue: [ AssertionFailed signal: ( 'Cant <1s> note because it is <2s>' expandMacrosWith: aMethod with: aState ) ]
+]
+
+{ #category : #asserting }
+Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
+
+	self
+		assertStateIsNot: 'in progress' for: aMethod;
+		assertStateIsNot: 'finished' for: aMethod
+]
+
 { #category : #accessing }
 Note >> assignedEmployee [
 
 	^ assignedEmployee
+]
+
+{ #category : #modifying }
+Note >> beFinished [
+
+	assignedEmployee
+		withContentDo: [ state := 'finished' ]
+		ifUnused:
+			[ AssertionFailed signal: 'Cant modify state of note to ''finished'' because it does not have an employee assigned' ]
+]
+
+{ #category : #modifying }
+Note >> beInProgress [
+
+	assignedEmployee
+		withContentDo: [ state := 'in progress' ]
+		ifUnused:
+			[ AssertionFailed signal: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned' ]
+]
+
+{ #category : #modifying }
+Note >> beOpen [
+
+	state := 'open'
 ]
 
 { #category : #accessing }
@@ -46,67 +93,30 @@ Note >> endingDate [
 ]
 
 { #category : #initialization }
-Note >> initializeWith: aBuilder [
+Note >> initializeWith: aNoteBuild [
 
-	description := aBuilder description.
-	category := aBuilder category.
-	endingDate := aBuilder endingDate.
+	description := aNoteBuild description.
+	category := aNoteBuild category.
+	endingDate := aNoteBuild endingDate.
 	state := 'open'.
-	assignedEmployee := aBuilder assignedEmployee
+	assignedEmployee := aNoteBuild assignedEmployee
 ]
 
 { #category : #modifying }
 Note >> modifyEndingDateTo: aDate [
 
-	endingDate := aDate
-]
-
-{ #category : #modifying }
-Note >> modifyState [
-
-	assignedEmployee
-		ifNil: [ AssertionFailed signal: 'Action failed because the note does not have an employee assigned' ].
-	state = 'open'
-		ifTrue: [ state := 'in progress' ]
-		ifFalse: [ state = 'in progress'
-				ifTrue: [ state := 'finished' ]
-			]
-]
-
-{ #category : #printing }
-Note >> printString [
-
-	^ 'Description: ' , description , ' | Category: ' , category asString , ' | Ending Date: '
-		, endingDate asString , ' | State: ' , state asString , ' | Assigned Employee: '
-		, assignedEmployee asString
+	endingDate := Optional containing: aDate
 ]
 
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 
-	self verifyStateIsOpen.
-	assignedEmployee := anEmployee
+	self assertStateIsNotInProgressNorFinishedFor: 'reassign'.
+	assignedEmployee := Optional containing: anEmployee
 ]
 
 { #category : #accessing }
 Note >> state [
 
 	^ state
-]
-
-{ #category : #asserting }
-Note >> verifyItDoesNotHaveAnEndingDate [
-
-	endingDate
-		ifNotNil: [ AssertionFailed signal: 'Action failed because the note has an ending date' ]
-]
-
-{ #category : #asserting }
-Note >> verifyStateIsOpen [
-
-	state = 'open'
-		ifFalse: [ state = 'in progress'
-				ifTrue: [ AssertionFailed signal: 'Action failed because the note is in progress' ]
-				ifFalse: [ AssertionFailed signal: 'Action failed because the note is finished' ]
-			]
 ]

@@ -71,7 +71,7 @@ ToDoListExerciseApplication >> initialRequest: request [
 
 	super initialRequest: request.
 	self initializeViews.
-	company := Company new.
+	company := NotesRepository new.
 	self configureInteractions
 ]
 

@@ -9,8 +9,8 @@ Class {
 
 { #category : #constructor }
 NoteTask class >> describedBy: aDescription [
-	
-	^ self new initializeDescribedBy: aDescription 
+
+	^ self new initializeDescribedBy: aDescription
 ]
 
 { #category : #initialization }

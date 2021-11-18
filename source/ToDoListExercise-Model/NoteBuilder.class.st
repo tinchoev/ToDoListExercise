@@ -10,8 +10,17 @@ Class {
 	#category : #'ToDoListExercise-Model'
 }
 
+{ #category : #asserting }
+NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
+
+	aDescription isEmpty
+		ifTrue: [ AssertionFailed signal: 'Note couldnt be created because it didnt have description' ]
+]
+
 { #category : #constructor }
 NoteBuilder class >> describedBy: aDescription [
+
+	self assertDescriptionIsNotEmpty: aDescription.
 	^ self new initializeDescribedBy: aDescription
 ]
 
@@ -22,9 +31,10 @@ NoteBuilder >> assignedEmployee [
 ]
 
 { #category : #modifying }
-NoteBuilder >> assignedTo: anEmployee [
+NoteBuilder >> assignedTo: anEmployee from: anEmployeesRepository [
 
-	assignedEmployee := anEmployee
+	anEmployeesRepository assertIsLoaded: anEmployee for: 'create note'.
+	assignedEmployee := Optional containing: anEmployee
 ]
 
 { #category : #creation }
@@ -36,8 +46,7 @@ NoteBuilder >> build [
 { #category : #modifying }
 NoteBuilder >> categorizedBy: aCategory [
 
-	category := aCategory.
-	^ self
+	category := Optional containing: aCategory
 ]
 
 { #category : #accessing }
@@ -61,12 +70,14 @@ NoteBuilder >> endingDate [
 { #category : #modifying }
 NoteBuilder >> endingIn: anEndingDate [
 
-	endingDate := anEndingDate.
-	^ self
+	endingDate := Optional containing: anEndingDate
 ]
 
 { #category : #initialization }
 NoteBuilder >> initializeDescribedBy: aDescription [
 
-	description := aDescription
+	description := aDescription.
+	category := Optional unusedBecauseAll: 'Category not assigned yet'.
+	assignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
+	endingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'
 ]

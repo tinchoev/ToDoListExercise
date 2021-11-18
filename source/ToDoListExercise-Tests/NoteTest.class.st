@@ -1,23 +1,63 @@
 Class {
 	#name : #NoteTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'employeesRepo',
+		'noteWithDescription'
+	],
 	#category : #'ToDoListExercise-Tests'
 }
+
+{ #category : #running }
+NoteTest >> setUp [
+
+	"Hooks that subclasses may override to define the fixture of test."
+
+	employeesRepo := EmployeesRepository new
+		addEmployee: 'Mickey';
+		yourself.
+	noteWithDescription := NoteBuilder describedBy: 'aDescription'
+]
+
+{ #category : #tests }
+NoteTest >> testCantCreateNoteWithoutDescription [
+
+	self
+		should: [ Note newFrom: ( NoteBuilder describedBy: '' ) build ]
+		raise: AssertionFailed
+		withMessageText: 'Note couldnt be created because it didnt have description'
+]
+
+{ #category : #tests }
+NoteTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigned [
+
+	| note |
+
+	note := noteWithDescription build.
+	self assert: note state equals: 'open'.
+	self
+		should: [ note beInProgress ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned'.
+	self
+		should: [ note beFinished ]
+		raise: AssertionFailed
+		withMessageText: 'Cant modify state of note to ''finished'' because it does not have an employee assigned'
+]
 
 { #category : #tests }
 NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 
 	| note |
 
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
 		build.
-	note modifyState.
-	note modifyState.
+	note beFinished.
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is finished'
+		withMessageText: 'Cant reassign note because it is finished'
 ]
 
 { #category : #tests }
@@ -25,39 +65,102 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 
 	| note |
 
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
 		build.
-	note modifyState.
+	note beInProgress.
 	self
 		should: [ note reassignTo: 'Goofy' ]
 		raise: AssertionFailed
-		withMessageText: 'Action failed because the note is in progress'
+		withMessageText: 'Cant reassign note because it is in progress'
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithCategoryAndEndingDate [
+NoteTest >> testCreateNoteWithAllItsAttributes [
 
 	| aNote |
 
-	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		categorizedBy: 'aCategory';
-		endingIn: 'aDate';
-		build.
-	self assert: aNote category isNotNil.
-	self assert: aNote endingDate isNotNil
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				categorizedBy: 'aCategory';
+				endingIn: January first , 2022;
+				assignedTo: 'Mickey' from: employeesRepo;
+				build ).
+	aNote category
+		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
+		ifUnused: [ self fail ].
+	aNote endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Mickey' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithCategoryAndWithoutEndingDate [
+NoteTest >> testCreateNoteWithoutAssignedEmployee [
 
 	| aNote |
 
-	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		categorizedBy: 'aCategory';
-		build.
-	self assert: aNote category isNotNil.
-	self assert: aNote endingDate isNil
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				categorizedBy: 'aCategory';
+				endingIn: January first , 2022;
+				build ).
+	aNote category
+		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
+		ifUnused: [ self fail ].
+	aNote endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	aNote assignedEmployee
+		withContentDo: [ self fail ]
+		ifUnused: [ :explanations | self assert: explanations equals: 'Employee not assigned yet' ]
+]
+
+{ #category : #tests }
+NoteTest >> testCreateNoteWithoutCategory [
+
+	| aNote |
+
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				endingIn: January first , 2022;
+				assignedTo: 'Mickey' from: employeesRepo;
+				build ).
+	aNote category
+		withContentDo: [ self fail ]
+		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
+	aNote endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Mickey' ]
+		ifUnused: [ self fail ]
+]
+
+{ #category : #tests }
+NoteTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
+
+	| aNote |
+
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				endingIn: January first , 2022;
+				build ).
+	aNote category
+		withContentDo: [ self fail ]
+		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
+	aNote endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	aNote assignedEmployee
+		withContentDo: [ self fail ]
+		ifUnused: [ :employee | self assert: employee equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -65,22 +168,80 @@ NoteTest >> testCreateNoteWithoutCategoryAndEndingDate [
 
 	| aNote |
 
-	aNote := ( NoteBuilder describedBy: 'aDescription' ) build.
-	self assert: aNote description equals: 'aDescription'.
-	self assert: aNote category isNil.
-	self assert: aNote endingDate isNil
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				assignedTo: 'Mickey' from: employeesRepo;
+				build ).
+	aNote category
+		withContentDo: [ self fail ]
+		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
+	aNote endingDate
+		withContentDo: [ self fail ]
+		ifUnused: [ :endingDate | self assert: endingDate equals: 'Ending date not assigned yet' ].
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Mickey' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
-NoteTest >> testCreateNoteWithoutCategoryAndWithEndingDate [
+NoteTest >> testCreateNoteWithoutCategoryEndingDateAndAssignedEmployee [
 
 	| aNote |
 
-	aNote := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: 'aDate';
-		build.
-	self assert: aNote category isNil.
-	self assert: aNote endingDate isNotNil
+	aNote := Note newFrom: noteWithDescription build.
+	aNote category
+		withContentDo: [ self fail ]
+		ifUnused: [ :category | self assert: category equals: 'Category not assigned yet' ].
+	aNote endingDate
+		withContentDo: [ self fail ]
+		ifUnused: [ :endingDate | self assert: endingDate equals: 'Ending date not assigned yet' ].
+	aNote assignedEmployee
+		withContentDo: [ self fail ]
+		ifUnused: [ :employee | self assert: employee equals: 'Employee not assigned yet' ]
+]
+
+{ #category : #tests }
+NoteTest >> testCreateNoteWithoutEndingDate [
+
+	| aNote |
+
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				categorizedBy: 'aCategory';
+				assignedTo: 'Mickey' from: employeesRepo;
+				build ).
+	aNote category
+		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
+		ifUnused: [ self fail ].
+	aNote endingDate
+		withContentDo: [ self fail ]
+		ifUnused: [ :endingDate | self assert: endingDate equals: 'Ending date not assigned yet' ].
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Mickey' ]
+		ifUnused: [ self fail ]
+]
+
+{ #category : #tests }
+NoteTest >> testCreateNoteWithoutEndingDateAndAssignedEmployee [
+
+	| aNote |
+
+	aNote := Note
+		newFrom:
+			( noteWithDescription
+				categorizedBy: 'aCategory';
+				build ).
+	aNote category
+		withContentDo: [ :category | self assert: category equals: 'aCategory' ]
+		ifUnused: [ self fail ].
+	aNote endingDate
+		withContentDo: [ self fail ]
+		ifUnused: [ :endingDate | self assert: endingDate equals: 'Ending date not assigned yet' ].
+	aNote assignedEmployee
+		withContentDo: [ self fail ]
+		ifUnused: [ :employee | self assert: employee equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -88,12 +249,103 @@ NoteTest >> testModifyEndingDate [
 
 	| note |
 
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		endingIn: '01-01-2022' asDate;
+	note := noteWithDescription
+		endingIn: January first , 2022;
 		build.
-	self assert: note endingDate equals: '01-01-2022' asDate.
-	note modifyEndingDateTo: '02-02-2022' asDate.
-	self assert: note endingDate equals: '02-02-2022' asDate
+
+	note endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January first , 2022 ]
+		ifUnused: [ self fail ].
+	note modifyEndingDateTo: January second , 2022.
+	note endingDate
+		withContentDo: [ :endingDate | self assert: endingDate equals: January second , 2022 ]
+		ifUnused: [ self fail ]
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromFinishedToInProgress [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beFinished.
+	self assert: note state equals: 'finished'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromFinishedToOpen [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beFinished.
+	self assert: note state equals: 'finished'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromInProgressToFinished [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'.
+	note beFinished.
+	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromInProgressToOpen [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'.
+	note beOpen.
+	self assert: note state equals: 'open'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromOpenToFinished [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beFinished.
+	self assert: note state equals: 'finished'
+]
+
+{ #category : #tests }
+NoteTest >> testModifyStateFromOpenToInProgress [
+
+	| note |
+
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
+		build.
+	self assert: note state equals: 'open'.
+	note beInProgress.
+	self assert: note state equals: 'in progress'
 ]
 
 { #category : #tests }
@@ -101,25 +353,15 @@ NoteTest >> testReassignToAnotherEmployee [
 
 	| note |
 
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Martin';
+	employeesRepo addEmployee: 'Martin'.
+	note := noteWithDescription
+		assignedTo: 'Mickey' from: employeesRepo;
 		build.
-	self assert: note assignedEmployee equals: 'Martin'.
-	note reassignTo: 'Lucas'.
-	self assert: note assignedEmployee equals: 'Lucas'
-]
-
-{ #category : #tests }
-NoteTest >> testState [
-
-	| note |
-
-	note := ( NoteBuilder describedBy: 'aDescription' )
-		assignedTo: 'Mickey';
-		build.
-	self assert: note state equals: 'open'.
-	note modifyState.
-	self assert: note state equals: 'in progress'.
-	note modifyState.
-	self assert: note state equals: 'finished'
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Mickey' ]
+		ifUnused: [ self fail ].
+	note reassignTo: 'Martin'.
+	note assignedEmployee
+		withContentDo: [ :employee | self assert: employee equals: 'Martin' ]
+		ifUnused: [ self fail ]
 ]
