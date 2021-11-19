@@ -5,8 +5,9 @@ Class {
 		'company',
 		'employeeRegistrationWebView',
 		'noteRegistrationWebView',
-		'noteOutputWebView',
-		'employeeOutoutWebView'
+		'noteWebView',
+		'employeeWebView',
+		'employeesRepository'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -47,10 +48,9 @@ ToDoListExerciseApplication >> componentSupplierForApplication [
 	^ Html5ComponentSupplier new
 ]
 
-{ #category : #rendering }
+{ #category : #initialization }
 ToDoListExerciseApplication >> configureInteractions [
 
-	
 ]
 
 { #category : #accessing }
@@ -60,32 +60,50 @@ ToDoListExerciseApplication >> contentView [
 	canvas
 		heading: 'Welcome to the To Do List Exercise!';
 		render: noteRegistrationWebView;
-		render: noteOutputWebView;
+		render: noteWebView;
 		render: employeeRegistrationWebView;
-		render: employeeOutoutWebView 
+		render: employeeWebView 
 	]
 ]
 
-{ #category : #rendering }
+{ #category : #accessing }
+ToDoListExerciseApplication >> employeeWebView [
+
+	^ employeeWebView
+]
+
+{ #category : #initialization }
 ToDoListExerciseApplication >> initialRequest: request [
 
 	super initialRequest: request.
 	self initializeViews.
-	company := NotesRepository new.
+	employeesRepository := EmployeesRepository new.
 	self configureInteractions
 ]
 
-{ #category : #rendering }
+{ #category : #initialization }
 ToDoListExerciseApplication >> initializeViews [
 
-	employeeRegistrationWebView := EmployeeRegistrationWebView new.
-	employeeOutoutWebView := EmployeeOutputWebView new.
-	noteRegistrationWebView := NoteRegistrationWebView new.
-	noteOutputWebView := NoteOutputWebView new
+	employeeWebView := EmployeeWebView new.
+	noteWebView := NoteWebView new.
+	employeeRegistrationWebView := EmployeeRegistrationWebView displayedIn: self.
+	noteRegistrationWebView := NoteRegistrationWebView displayedIn: self
 ]
 
 { #category : #accessing }
 ToDoListExerciseApplication >> jQueryLibrary [
 
 	^ JQuery3OnlineLibrary default
+]
+
+{ #category : #rendering }
+ToDoListExerciseApplication >> renderNotes: notes [
+
+	noteWebView renderNotes: notes
+]
+
+{ #category : #rendering }
+ToDoListExerciseApplication >> updateEmployees: employees [
+
+	employeeWebView changeEmployeesTo: employees
 ]

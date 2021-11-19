@@ -2,13 +2,18 @@ Class {
 	#name : #EmployeeRegistrationWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'tasksForEmployees',
-		'tasksContainerForEmployees',
 		'nameField',
-		'registrationButton'
+		'registrationButton',
+		'workingContext'
 	],
 	#category : #'ToDoListExercise-Web'
 }
+
+{ #category : #constructor }
+EmployeeRegistrationWebView class >> displayedIn: aWorkingContext [
+
+	^ self new initializeDisplayedIn: aWorkingContext
+]
 
 { #category : #initialization }
 EmployeeRegistrationWebView >> configureInteractions [
@@ -16,19 +21,21 @@ EmployeeRegistrationWebView >> configureInteractions [
 	nameField on trigger
 		serializeIt;
 		enable: registrationButton.
+
 	registrationButton on trigger
 		disable;
-		serverDo: [ tasksForEmployees add: ( NoteTask describedBy: nameField model ) ];
-		setValueTo: [ '' ] thenTriggerChangeOf: nameField;
-		render: tasksContainerForEmployees
+		serverDo: [ workingContext updateEmployees: nameField model ];
+		setValueTo: [ '' ] thenTriggerChangeOf: nameField
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> initialize [
+EmployeeRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
 
+	workingContext := aWorkingContext.
 	self
 		initializeNameField;
-		initializeRegistrationButton
+		initializeRegistrationButton;
+		configureInteractions
 ]
 
 { #category : #initialization }
@@ -44,14 +51,6 @@ EmployeeRegistrationWebView >> initializeRegistrationButton [
 	registrationButton := self componentSupplier
 		asynchronicButtonLabeled: 'Create employee'
 		applying: [ :theButton | theButton beDisabled ]
-]
-
-{ #category : #initialization }
-EmployeeRegistrationWebView >> initializeTaskContainerForEmployees [
-
-	tasksContainerForEmployees := self componentSupplier
-		divisionContainerWrapping: [ :canvas | canvas unorderedList: tasksForEmployees ]
-		applying: [  ]
 ]
 
 { #category : #rendering }

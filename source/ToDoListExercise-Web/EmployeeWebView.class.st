@@ -1,14 +1,21 @@
 Class {
-	#name : #EmployeeOutputWebView,
+	#name : #EmployeeWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'table'
+		'table',
+		'div'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
+{ #category : #rendering }
+EmployeeWebView >> changeEmployeesTo: employees [
+
+	table changeContentsTo: employees
+]
+
 { #category : #initialization }
-EmployeeOutputWebView >> initialize [
+EmployeeWebView >> initialize [
 
 	table := TableWebViewBuilder new
 		addColumn: [ :column | 
@@ -16,11 +23,15 @@ EmployeeOutputWebView >> initialize [
 				titled: 'Nombre';
 				rendering: [ :content | content ]
 			];
-		build
+		build.
+	"div := self componentSupplier
+		divisionContainerWrapping: [ :canvas | canvas render: table ]
+		applying: [  ].
+	div beIdentifiable"
 ]
 
 { #category : #rendering }
-EmployeeOutputWebView >> renderContentOn: aCanvas [
+EmployeeWebView >> renderContentOn: aCanvas [
 
 	"This is the main rendering method of WAPainter. It will be called with an instance of
 	the Renderer class returned by #rendererClass whenever this Painter is asked to render

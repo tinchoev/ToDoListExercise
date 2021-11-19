@@ -1,23 +1,15 @@
 Class {
-	#name : #NoteOutputWebView,
+	#name : #NoteWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'notes',
 		'table'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #adding }
-NoteOutputWebView >> addNote: aNote [
-
-	notes add: aNote
-]
-
 { #category : #initialization }
-NoteOutputWebView >> initialize [
+NoteWebView >> initialize [
 
-	notes := OrderedCollection new.
 	table := TableWebViewBuilder new
 		addColumn: [ :column | 
 			column
@@ -48,7 +40,7 @@ NoteOutputWebView >> initialize [
 ]
 
 { #category : #rendering }
-NoteOutputWebView >> renderContentOn: aCanvas [
+NoteWebView >> renderContentOn: aCanvas [
 
 	"This is the main rendering method of WAPainter. It will be called with an instance of
 	the Renderer class returned by #rendererClass whenever this Painter is asked to render
@@ -56,4 +48,10 @@ NoteOutputWebView >> renderContentOn: aCanvas [
 	use 'html' as the parameter name."
 
 	aCanvas render: table
+]
+
+{ #category : #rendering }
+NoteWebView >> renderNotes: notes [
+
+	table changeContentsTo: notes
 ]

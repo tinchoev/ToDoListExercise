@@ -2,56 +2,48 @@ Class {
 	#name : #NoteRegistrationWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'company',
-		'tasksForNotes',
-		'tasksContainerForNotes',
 		'endingDateField',
 		'descriptionField',
 		'categoryField',
 		'assignedEmployeeDropdown',
-		'notesRegistrationButton',
-		'notes'
+		'registrationButton',
+		'workingContext',
+		'notesRepository'
+	],
+	#classInstVars : [
+		'aWorkingContext'
 	],
 	#category : #'ToDoListExercise-Web'
 }
+
+{ #category : #constructor }
+NoteRegistrationWebView class >> displayedIn: aWorkingContext [
+
+	^ self new initializeDisplayedIn: aWorkingContext
+]
 
 { #category : #initialization }
 NoteRegistrationWebView >> configureInteractions [
 
 	descriptionField on trigger
 		serializeIt;
-		enable: notesRegistrationButton.
+		enable: registrationButton.
 	categoryField on trigger serializeIt.
 	endingDateField on trigger serializeIt.
 	assignedEmployeeDropdown on trigger serializeIt.
-	notesRegistrationButton on trigger
+	registrationButton on trigger
 		disable;
-		serverDo: [ | note |
-
-			note := ( NoteBuilder describedBy: descriptionField model )
-				categorizedBy: categoryField model;
-				"		endingIn: endingDateField model;
+		serverDo: [ notesRepository
+				addNote:
+					( ( NoteBuilder describedBy: descriptionField model )
+						categorizedBy: categoryField model;
+						"		endingIn: endingDateField model;
 						assignedTo: assignedEmployeeDropdown model;"
-					build.
-			notes add: note
+							build ).
+			workingContext renderNotes: notesRepository notes
 			];
 		setValueTo: [ '' ] thenTriggerChangeOf: descriptionField;
-		setValueTo: [ '' ] thenTriggerChangeOf: categoryField;
-		render: tasksContainerForNotes
-]
-
-{ #category : #initialization }
-NoteRegistrationWebView >> initialize [
-
-	notes := OrderedCollection new.
-	self
-		initializeRegistrationButton;
-		initializeTaskContainerForNotes;
-		initializeAssignedEmployeeDropdown;
-		initializeCategoryField;
-		initializeDescriptionField;
-		initializeEndingDateField;
-		configureInteractions
+		setValueTo: [ '' ] thenTriggerChangeOf: categoryField
 ]
 
 { #category : #initialization }
@@ -76,6 +68,20 @@ NoteRegistrationWebView >> initializeDescriptionField [
 ]
 
 { #category : #initialization }
+NoteRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
+
+	self
+		initializeRegistrationButton;
+		initializeAssignedEmployeeDropdown;
+		initializeCategoryField;
+		initializeDescriptionField;
+		initializeEndingDateField;
+		configureInteractions.
+	workingContext := aWorkingContext.
+	notesRepository := NotesRepository new
+]
+
+{ #category : #initialization }
 NoteRegistrationWebView >> initializeEndingDateField [
 
 	endingDateField := self componentSupplier
@@ -85,25 +91,9 @@ NoteRegistrationWebView >> initializeEndingDateField [
 { #category : #initialization }
 NoteRegistrationWebView >> initializeRegistrationButton [
 
-	notesRegistrationButton := self componentSupplier
+	registrationButton := self componentSupplier
 		asynchronicButtonLabeled: 'Create note'
-		applying: [ :theButton | 
-			theButton beDisabled.
-			theButton addClass bootstrap3 buttonPrimary
-			]
-]
-
-{ #category : #initialization }
-NoteRegistrationWebView >> initializeTaskContainerForNotes [
-
-	tasksContainerForNotes := self componentSupplier
-		divisionContainerWrapping: [ :canvas | canvas unorderedList: tasksForNotes ]
-		applying: [  ]
-]
-
-{ #category : #accessing }
-NoteRegistrationWebView >> notes [
-	^ notes
+		applying: [ :theButton | theButton beDisabled ]
 ]
 
 { #category : #rendering }
@@ -119,5 +109,5 @@ NoteRegistrationWebView >> renderContentOn: aCanvas [
 		render: categoryField;
 		render: endingDateField;
 		render: assignedEmployeeDropdown;
-		render: notesRegistrationButton
+		render: registrationButton
 ]
