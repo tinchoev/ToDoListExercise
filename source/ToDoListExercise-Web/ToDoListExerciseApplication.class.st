@@ -3,11 +3,8 @@ Class {
 	#superclass : #WillowApplication,
 	#instVars : [
 		'company',
-		'employeeRegistrationWebView',
 		'noteRegistrationWebView',
-		'noteWebView',
-		'employeeWebView',
-		'employeesRepository'
+		'noteWebView'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -22,6 +19,12 @@ ToDoListExerciseApplication class >> applicationTitle [
 ToDoListExerciseApplication class >> handlerName [
 
 	^ 'to-do-list-exercise'
+]
+
+{ #category : #accessing }
+ToDoListExerciseApplication class >> sessionClass [
+
+	^ ToDoListExerciseSession
 ]
 
 { #category : #accessing }
@@ -48,45 +51,22 @@ ToDoListExerciseApplication >> componentSupplierForApplication [
 	^ Html5ComponentSupplier new
 ]
 
-{ #category : #initialization }
-ToDoListExerciseApplication >> configureInteractions [
-
-]
-
 { #category : #accessing }
 ToDoListExerciseApplication >> contentView [
 
-	^ [ :canvas | 
-	canvas
-		heading: 'Welcome to the To Do List Exercise!';
-		render: noteRegistrationWebView;
-		render: noteWebView;
-		render: employeeRegistrationWebView;
-		render: employeeWebView 
-	]
-]
-
-{ #category : #accessing }
-ToDoListExerciseApplication >> employeeWebView [
-
-	^ employeeWebView
+	^ self session applicationContext mainWebView
 ]
 
 { #category : #initialization }
 ToDoListExerciseApplication >> initialRequest: request [
 
 	super initialRequest: request.
-	self initializeViews.
-	employeesRepository := EmployeesRepository new.
-	self configureInteractions
+	self initializeViews
 ]
 
 { #category : #initialization }
 ToDoListExerciseApplication >> initializeViews [
 
-	employeeWebView := EmployeeWebView new.
-	noteWebView := NoteWebView new.
-	employeeRegistrationWebView := EmployeeRegistrationWebView displayedIn: self.
 	noteRegistrationWebView := NoteRegistrationWebView displayedIn: self
 ]
 
@@ -100,10 +80,4 @@ ToDoListExerciseApplication >> jQueryLibrary [
 ToDoListExerciseApplication >> renderNotes: notes [
 
 	noteWebView renderNotes: notes
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> updateEmployees: employees [
-
-	employeeWebView changeEmployeesTo: employees
 ]

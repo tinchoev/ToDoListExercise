@@ -1,5 +1,5 @@
 Class {
-	#name : #NoteWebView,
+	#name : #NotesWebView,
 	#superclass : #WAPainter,
 	#instVars : [
 		'table'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #initialization }
-NoteWebView >> initialize [
+NotesWebView >> initialize [
 
 	table := TableWebViewBuilder new
 		addColumn: [ :column | 
@@ -40,7 +40,7 @@ NoteWebView >> initialize [
 ]
 
 { #category : #rendering }
-NoteWebView >> renderContentOn: aCanvas [
+NotesWebView >> renderContentOn: aCanvas [
 
 	"This is the main rendering method of WAPainter. It will be called with an instance of
 	the Renderer class returned by #rendererClass whenever this Painter is asked to render
@@ -51,7 +51,7 @@ NoteWebView >> renderContentOn: aCanvas [
 ]
 
 { #category : #rendering }
-NoteWebView >> renderNotes: notes [
+NotesWebView >> renderNotes: notes [
 
 	table changeContentsTo: notes
 ]
