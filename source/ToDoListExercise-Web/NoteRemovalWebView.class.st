@@ -1,8 +1,8 @@
 Class {
-	#name : #EmployeeRegistrationWebView,
+	#name : #NoteRemovalWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'nameField',
+		'descriptionDropdown',
 		'workingContext',
 		'acceptButton',
 		'cancelButton'
@@ -11,34 +11,34 @@ Class {
 }
 
 { #category : #constructor }
-EmployeeRegistrationWebView class >> displayedIn: aWorkingContext [
+NoteRemovalWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> configureInteractions [
+NoteRemovalWebView >> configureInteractions [
 
-	nameField on trigger
+	descriptionDropdown on trigger
 		serializeIt;
 		enable: acceptButton.
 
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				addEmployee: nameField model;
-				setCurrentWebViewTo: ( EmployeesWebView displayedIn: workingContext )
+				remove: descriptionDropdown currentSelection;
+				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
 
 	cancelButton on trigger
 		disable;
-		serverDo: [ workingContext setCurrentWebViewTo: ( EmployeesWebView displayedIn: workingContext ) ];
+		serverDo: [ workingContext setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext ) ];
 		render: workingContext identifiedCurrentWebView
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> initializeAcceptButton [
+NoteRemovalWebView >> initializeAcceptButton [
 
 	acceptButton := self componentSupplier
 		asynchronicButtonLabeled: 'Accept'
@@ -46,7 +46,7 @@ EmployeeRegistrationWebView >> initializeAcceptButton [
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> initializeCancelButton [
+NoteRemovalWebView >> initializeCancelButton [
 
 	cancelButton := self componentSupplier
 		asynchronicButtonLabeled: 'Cancel'
@@ -54,28 +54,28 @@ EmployeeRegistrationWebView >> initializeCancelButton [
 ]
 
 { #category : #initialization }
-EmployeeRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
+NoteRemovalWebView >> initializeDescriptionDropdown [
+
+	descriptionDropdown := self componentSupplier dropdownListApplying: [ :dropdown |  ].
+	descriptionDropdown allowAnyOf: ( workingContext notes collect: [ :note | note description ] )
+]
+
+{ #category : #initialization }
+NoteRemovalWebView >> initializeDisplayedIn: aWorkingContext [
 
 	workingContext := aWorkingContext.
 	self
-		initializeNameField;
+		initializeDescriptionDropdown;
 		initializeAcceptButton;
 		initializeCancelButton;
 		configureInteractions
 ]
 
-{ #category : #initialization }
-EmployeeRegistrationWebView >> initializeNameField [
-
-	nameField := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the employee''s name' ]
-]
-
 { #category : #rendering }
-EmployeeRegistrationWebView >> renderContentOn: aCanvas [
+NoteRemovalWebView >> renderContentOn: aCanvas [
 
 	aCanvas
-		render: nameField;
+		render: descriptionDropdown;
 		render: acceptButton;
 		render: cancelButton
 ]

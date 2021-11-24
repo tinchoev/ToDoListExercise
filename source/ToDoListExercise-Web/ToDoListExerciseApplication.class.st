@@ -3,10 +3,8 @@ Class {
 	#superclass : #WillowApplication,
 	#instVars : [
 		'company',
-		'employeeRegistrationWebView',
 		'noteRegistrationWebView',
-		'noteOutputWebView',
-		'employeeOutoutWebView'
+		'noteWebView'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -21,6 +19,12 @@ ToDoListExerciseApplication class >> applicationTitle [
 ToDoListExerciseApplication class >> handlerName [
 
 	^ 'to-do-list-exercise'
+]
+
+{ #category : #accessing }
+ToDoListExerciseApplication class >> sessionClass [
+
+	^ ToDoListExerciseSession
 ]
 
 { #category : #accessing }
@@ -44,44 +48,19 @@ ToDoListExerciseApplication class >> stop [
 { #category : #accessing }
 ToDoListExerciseApplication >> componentSupplierForApplication [
 
-	^ Html5ComponentSupplier new
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> configureInteractions [
-
-	
+	^ Bootstrap3ComponentSupplier online
 ]
 
 { #category : #accessing }
 ToDoListExerciseApplication >> contentView [
 
-	^ [ :canvas | 
-	canvas
-		heading: 'Welcome to the To Do List Exercise!';
-		render: noteRegistrationWebView;
-		render: noteOutputWebView;
-		render: employeeRegistrationWebView;
-		render: employeeOutoutWebView 
-	]
+	^ self session applicationContext mainWebView
 ]
 
-{ #category : #rendering }
+{ #category : #initialization }
 ToDoListExerciseApplication >> initialRequest: request [
 
-	super initialRequest: request.
-	self initializeViews.
-	company := NotesRepository new.
-	self configureInteractions
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> initializeViews [
-
-	employeeRegistrationWebView := EmployeeRegistrationWebView new.
-	employeeOutoutWebView := EmployeeOutputWebView new.
-	noteRegistrationWebView := NoteRegistrationWebView new.
-	noteOutputWebView := NoteOutputWebView new
+	super initialRequest: request
 ]
 
 { #category : #accessing }
