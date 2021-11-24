@@ -22,16 +22,15 @@ NoteStateModificationWebView >> configureInteractions [
 
 	descriptionDropdown on trigger
 		serializeIt;
-		enable: stateDropdown.
-
-	stateDropdown on trigger
-		serializeIt;
 		enable: acceptButton.
+
+	stateDropdown on trigger serializeIt.
 
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				modifyStateOf: descriptionDropdown currentSelection to: stateDropdown currentSelection;
+				modifyStateOf: descriptionDropdown currentSelection
+					to: ( stateDropdown currentSelectionIfNone: [  ] );
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
@@ -80,8 +79,8 @@ NoteStateModificationWebView >> initializeDisplayedIn: aWorkingContext [
 { #category : #initialization }
 NoteStateModificationWebView >> initializeStateDropdown [
 
-	stateDropdown := self componentSupplier dropdownListApplying: [ :dropdown | dropdown beDisabled ].
-	stateDropdown allowAnyOf: #('' 'Open' 'In progress' 'Finished')
+	stateDropdown := self componentSupplier dropdownListApplying: [ :dropdown | ].
+	stateDropdown allowAnyOf: #('Open' 'In progress' 'Finished')
 ]
 
 { #category : #rendering }

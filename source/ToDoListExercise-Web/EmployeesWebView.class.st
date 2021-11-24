@@ -45,7 +45,7 @@ EmployeesWebView >> initializeTableWebView [
 				titled: 'Name';
 				rendering: [ :anEmployee | anEmployee ]
 			];
-		build
+		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]
 
 { #category : #rendering }

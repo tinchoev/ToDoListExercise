@@ -31,10 +31,10 @@ NoteRegistrationWebView >> configureInteractions [
 		serverDo: [ aNoteBuilder := NoteBuilder describedBy: descriptionField model ];
 		enable: acceptButton;
 		enable: categoryField;
-		enable: endingDateField;
-		enable: assignedEmployeeDropdown.
+		enable: endingDateField.
 	categoryField on trigger serverDo: [ aNoteBuilder categorizedBy: categoryField model ].
-	endingDateField on trigger serverDo: [ aNoteBuilder endingIn: endingDateField model ].
+	endingDateField on trigger
+		serverDo: [ aNoteBuilder endingIn: ( Date fromString: endingDateField contents ) ].
 	assignedEmployeeDropdown on trigger
 		serverDo: [ aNoteBuilder
 				assignedTo: ( assignedEmployeeDropdown currentSelectionIfNone: [  ] )
@@ -66,13 +66,9 @@ NoteRegistrationWebView >> initializeAcceptButton [
 { #category : #initialization }
 NoteRegistrationWebView >> initializeAssignedEmployeeDropdown [
 
-	| options |
-
-	options := OrderedCollection with: nil.
-	workingContext employees do: [ :employee | options add: employee ].
-	assignedEmployeeDropdown := self componentSupplier
-		dropdownListApplying: [ :dropdown | dropdown beDisabled ].
-	assignedEmployeeDropdown allowAnyOf: options
+	assignedEmployeeDropdown := ( self componentSupplier dropdownListApplying: [ :dropdown |  ] )
+		allowAnyOf: workingContext employees;
+		yourself
 ]
 
 { #category : #initialization }
@@ -114,7 +110,8 @@ NoteRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
 { #category : #initialization }
 NoteRegistrationWebView >> initializeEndingDateField [
 
-	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]
+	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]".
+	endingDateField on change serializeIt"
 ]
 
 { #category : #rendering }

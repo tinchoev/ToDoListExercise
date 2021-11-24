@@ -31,7 +31,8 @@ NoteEndingDateModificationWebView >> configureInteractions [
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				modifyEndingDateOf: descriptionDropdown currentSelection to: endingDateField model;
+				modifyEndingDateOf: descriptionDropdown currentSelection
+					to: ( Date fromString: endingDateField contents );
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.

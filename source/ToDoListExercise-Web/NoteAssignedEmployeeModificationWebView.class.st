@@ -22,16 +22,15 @@ NoteAssignedEmployeeModificationWebView >> configureInteractions [
 
 	descriptionDropdown on trigger
 		serializeIt;
-		enable: employeeDropdown.
-
-	employeeDropdown on trigger
-		serializeIt;
 		enable: acceptButton.
+
+	employeeDropdown on trigger serializeIt.
 
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				reassign: descriptionDropdown currentSelection to: employeeDropdown currentSelection;
+				reassign: descriptionDropdown currentSelection
+					to: ( employeeDropdown currentSelectionIfNone: [  ] );
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
@@ -80,13 +79,9 @@ NoteAssignedEmployeeModificationWebView >> initializeDisplayedIn: aWorkingContex
 { #category : #initialization }
 NoteAssignedEmployeeModificationWebView >> initializeEmployeeDropdown [
 
-	| options |
-
-	options := OrderedCollection with: nil.
-	workingContext employees do: [ :employee | options add: employee ].
 	employeeDropdown := self componentSupplier
-		dropdownListApplying: [ :dropdown | dropdown beDisabled ].
-	employeeDropdown allowAnyOf: options
+		dropdownListApplying: [ :dropdown |  ].
+	employeeDropdown allowAnyOf: workingContext employees
 ]
 
 { #category : #rendering }

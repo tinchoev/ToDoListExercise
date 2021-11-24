@@ -48,7 +48,7 @@ ToDoListExerciseApplication class >> stop [
 { #category : #accessing }
 ToDoListExerciseApplication >> componentSupplierForApplication [
 
-	^ Html5ComponentSupplier new
+	^ Bootstrap3ComponentSupplier online
 ]
 
 { #category : #accessing }

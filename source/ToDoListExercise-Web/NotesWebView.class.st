@@ -123,7 +123,7 @@ NotesWebView >> initializeTableWebView [
 				titled: 'State';
 				rendering: [ :note | note state ]
 			];
-		build
+		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]
 
 { #category : #rendering }
