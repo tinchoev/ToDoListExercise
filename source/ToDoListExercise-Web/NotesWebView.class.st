@@ -2,39 +2,126 @@ Class {
 	#name : #NotesWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'table'
+		'workingContext',
+		'registrationButton',
+		'tableWebView',
+		'removeButton',
+		'modifyStateButton',
+		'modifyEndingDateButton',
+		'modifyEmployeeButton'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #initialization }
-NotesWebView >> initialize [
+{ #category : #constructor }
+NotesWebView class >> displayedIn: aWorkingContext [
 
-	table := TableWebViewBuilder new
+	^ self new initializeDisplayedIn: aWorkingContext
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeAssignedEmployeeModificationButton [
+
+	modifyEmployeeButton := self componentSupplier
+		asynchronicButtonLabeled: 'Reassign note to another employee'
+		applying: [ :theButton |  ].
+
+	modifyEmployeeButton on trigger
+		serverDo: [ workingContext
+				setCurrentWebViewTo: ( NoteAssignedEmployeeModificationWebView displayedIn: workingContext )
+			];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeDisplayedIn: aWorkingContext [
+
+	workingContext := aWorkingContext.
+	self
+		initializeRegistrationButton;
+		initializeRemoveButton;
+		initializeStateModificationButton;
+		initializeEndingDateModificationButton;
+		initializeAssignedEmployeeModificationButton;
+		initializeTableWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeEndingDateModificationButton [
+
+	modifyEndingDateButton := self componentSupplier
+		asynchronicButtonLabeled: 'Modify ending date of a note'
+		applying: [ :theButton |  ].
+
+	modifyEndingDateButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteEndingDateModificationWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeRegistrationButton [
+
+	registrationButton := self componentSupplier
+		asynchronicButtonLabeled: 'Register Note'
+		applying: [ :theButton |  ].
+
+	registrationButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteRegistrationWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeRemoveButton [
+
+	removeButton := self componentSupplier
+		asynchronicButtonLabeled: 'Remove Note'
+		applying: [ :theButton |  ].
+
+	removeButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteRemovalWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeStateModificationButton [
+
+	modifyStateButton := self componentSupplier
+		asynchronicButtonLabeled: 'Modify state of a note'
+		applying: [ :theButton |  ].
+
+	modifyStateButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteStateModificationWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeTableWebView [
+
+	tableWebView := TableWebViewBuilder new
 		addColumn: [ :column | 
 			column
 				titled: 'Description';
-				rendering: [ :content | content ]
+				rendering: [ :note | note description ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Categoría';
-				rendering: [ :content | content ]
+				rendering: [ :note | note category withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Ending Date';
-				rendering: [ :content | content ]
+				rendering: [ :note | note endingDate withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Assigned Employee';
-				rendering: [ :content | content ]
+				rendering: [ :note | note assignedEmployee withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'State';
-				rendering: [ :content | content ]
+				rendering: [ :note | note state ]
 			];
 		build
 ]
@@ -42,16 +129,13 @@ NotesWebView >> initialize [
 { #category : #rendering }
 NotesWebView >> renderContentOn: aCanvas [
 
-	"This is the main rendering method of WAPainter. It will be called with an instance of
-	the Renderer class returned by #rendererClass whenever this Painter is asked to render
-	itself. By convention, implementations of this method that expect a Canvas renderer
-	use 'html' as the parameter name."
+	tableWebView changeContentsTo: workingContext notes.
 
-	aCanvas render: table
-]
-
-{ #category : #rendering }
-NotesWebView >> renderNotes: notes [
-
-	table changeContentsTo: notes
+	aCanvas
+		render: registrationButton;
+		render: removeButton;
+		render: modifyStateButton;
+		render: modifyEndingDateButton;
+		render: modifyEmployeeButton;
+		render: tableWebView
 ]

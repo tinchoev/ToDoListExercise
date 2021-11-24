@@ -37,7 +37,7 @@ EmployeesContext >> initializeWorkingWith: aWorkingContext [
 	workingContext := aWorkingContext
 ]
 
-{ #category : #accessing }
+{ #category : #modifying }
 EmployeesContext >> setCurrentWebViewTo: aWebView [
 
 	workingContext setCurrentWebViewTo: aWebView

@@ -2,7 +2,6 @@ Class {
 	#name : #EmployeesWebView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'div',
 		'tableWebView',
 		'workingContext',
 		'registrationButton'
@@ -14,12 +13,6 @@ Class {
 EmployeesWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
-]
-
-{ #category : #rendering }
-EmployeesWebView >> changeEmployeesTo: employees [
-
-	tableWebView changeContentsTo: employees
 ]
 
 { #category : #initialization }

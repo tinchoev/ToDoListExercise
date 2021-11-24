@@ -58,6 +58,12 @@ ToDoListExerciseApplicationContext >> mainWebView [
 ]
 
 { #category : #accessing }
+ToDoListExerciseApplicationContext >> notesRepository [
+
+	^ notesRepository
+]
+
+{ #category : #accessing }
 ToDoListExerciseApplicationContext >> setCurrentWebViewTo: aCurrentWebView [
 
 	currentWebView := aCurrentWebView

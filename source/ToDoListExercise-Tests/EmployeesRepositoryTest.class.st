@@ -34,3 +34,15 @@ EmployeesRepositoryTest >> testAssertAnEmployeeIsLoaded [
 	repo addEmployee: 'Goku'.
 	self withTheOnlyOneIn: repo employees do: [ :employee | self assert: employee equals: 'Goku' ]
 ]
+
+{ #category : #tests }
+EmployeesRepositoryTest >> testCantAddEmployeeThatsAlreadyAdded [
+
+	self assert: repo employees isEmpty.
+	repo addEmployee: 'Goku'.
+	self withTheOnlyOneIn: repo employees do: [ :employee | self assert: employee equals: 'Goku' ].
+	self
+		should: [ repo addEmployee: 'Goku' ]
+		raise: AssertionFailed
+		withMessageText: 'Cant add employee because it is already added'
+]

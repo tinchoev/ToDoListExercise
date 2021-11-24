@@ -60,24 +60,11 @@ ToDoListExerciseApplication >> contentView [
 { #category : #initialization }
 ToDoListExerciseApplication >> initialRequest: request [
 
-	super initialRequest: request.
-	self initializeViews
-]
-
-{ #category : #initialization }
-ToDoListExerciseApplication >> initializeViews [
-
-	noteRegistrationWebView := NoteRegistrationWebView displayedIn: self
+	super initialRequest: request
 ]
 
 { #category : #accessing }
 ToDoListExerciseApplication >> jQueryLibrary [
 
 	^ JQuery3OnlineLibrary default
-]
-
-{ #category : #rendering }
-ToDoListExerciseApplication >> renderNotes: notes [
-
-	noteWebView renderNotes: notes
 ]

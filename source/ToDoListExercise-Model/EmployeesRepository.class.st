@@ -10,7 +10,15 @@ Class {
 { #category : #modifying }
 EmployeesRepository >> addEmployee: anEmployee [
 
+	self assertEmployeeIsNotAdded: anEmployee.
 	employees add: anEmployee
+]
+
+{ #category : #asserting }
+EmployeesRepository >> assertEmployeeIsNotAdded: anEmployee [
+
+	( employees includes: anEmployee )
+		ifTrue: [ AssertionFailed signal: 'Cant add employee because it is already added' ]
 ]
 
 { #category : #asserting }

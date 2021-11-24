@@ -12,7 +12,9 @@ Class {
 { #category : #accessing }
 ButtonsWebView >> buttonLabeled: aLabel [
 
-	^ self componentSupplier asynchronicButtonLabeled: aLabel applying: [ :theButton |  ]
+	^ self componentSupplier
+		asynchronicButtonLabeled: aLabel
+		applying: [ :theButton | theButton addClass bootstrap3 buttonPrimary ]
 ]
 
 { #category : #configuring }
@@ -30,7 +32,8 @@ ButtonsWebView >> configureTriggers [
 		configureTriggerOf: homeButton toRender: WelcomeWebView new;
 		configureTriggerOf: employeesButton
 			toRender: ( EmployeesWebView displayedIn: ( EmployeesContext workingWith: self session applicationContext ) );
-		configureTriggerOf: notesButton toRender: NotesWebView new
+		configureTriggerOf: notesButton
+			toRender: ( NotesWebView displayedIn: ( NotesContext workingWith: self session applicationContext ) )
 ]
 
 { #category : #initialization }

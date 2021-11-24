@@ -6,9 +6,9 @@ Class {
 		'descriptionField',
 		'categoryField',
 		'assignedEmployeeDropdown',
-		'registrationButton',
 		'workingContext',
-		'notesRepository'
+		'acceptButton',
+		'cancelButton'
 	],
 	#classInstVars : [
 		'aWorkingContext'
@@ -25,39 +25,69 @@ NoteRegistrationWebView class >> displayedIn: aWorkingContext [
 { #category : #initialization }
 NoteRegistrationWebView >> configureInteractions [
 
+	| aNoteBuilder |
+
 	descriptionField on trigger
-		serializeIt;
-		enable: registrationButton.
-	categoryField on trigger serializeIt.
-	endingDateField on trigger serializeIt.
-	assignedEmployeeDropdown on trigger serializeIt.
-	registrationButton on trigger
+		serverDo: [ aNoteBuilder := NoteBuilder describedBy: descriptionField model ];
+		enable: acceptButton;
+		enable: categoryField;
+		enable: endingDateField;
+		enable: assignedEmployeeDropdown.
+	categoryField on trigger serverDo: [ aNoteBuilder categorizedBy: categoryField model ].
+	endingDateField on trigger serverDo: [ aNoteBuilder endingIn: endingDateField model ].
+	assignedEmployeeDropdown on trigger
+		serverDo: [ aNoteBuilder
+				assignedTo: ( assignedEmployeeDropdown currentSelectionIfNone: [  ] )
+				from: workingContext employeesRepository
+			].
+
+	acceptButton on trigger
 		disable;
-		serverDo: [ notesRepository
-				addNote:
-					( ( NoteBuilder describedBy: descriptionField model )
-						categorizedBy: categoryField model;
-						"		endingIn: endingDateField model;
-						assignedTo: assignedEmployeeDropdown model;"
-							build ).
-			workingContext renderNotes: notesRepository notes
+		serverDo: [ workingContext
+				addNote: aNoteBuilder build;
+				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
-		setValueTo: [ '' ] thenTriggerChangeOf: descriptionField;
-		setValueTo: [ '' ] thenTriggerChangeOf: categoryField
+		render: workingContext identifiedCurrentWebView.
+
+	cancelButton on trigger
+		disable;
+		serverDo: [ workingContext setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NoteRegistrationWebView >> initializeAcceptButton [
+
+	acceptButton := self componentSupplier
+		asynchronicButtonLabeled: 'Accept'
+		applying: [ :theButton | theButton beDisabled ]
 ]
 
 { #category : #initialization }
 NoteRegistrationWebView >> initializeAssignedEmployeeDropdown [
 
+	| options |
+
+	options := OrderedCollection with: nil.
+	workingContext employees do: [ :employee | options add: employee ].
 	assignedEmployeeDropdown := self componentSupplier
-		dropdownListApplying: [ :theField | "theField setPlaceholderTo: 'Select an employee to be assigned'" ]	"	taskDropdownForNoteAssignedEmployee allowAnyOf: company employees"
+		dropdownListApplying: [ :dropdown | dropdown beDisabled ].
+	assignedEmployeeDropdown allowAnyOf: options
+]
+
+{ #category : #initialization }
+NoteRegistrationWebView >> initializeCancelButton [
+
+	cancelButton := self componentSupplier
+		asynchronicButtonLabeled: 'Cancel'
+		applying: [ :theButton | ]
 ]
 
 { #category : #initialization }
 NoteRegistrationWebView >> initializeCategoryField [
 
 	categoryField := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the category' ]
+		singleLineTextFieldApplying: [ :theField | (theField setPlaceholderTo: 'Write the category') + theField beDisabled ]
 ]
 
 { #category : #initialization }
@@ -70,44 +100,31 @@ NoteRegistrationWebView >> initializeDescriptionField [
 { #category : #initialization }
 NoteRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
 
-	self
-		initializeRegistrationButton;
-		initializeAssignedEmployeeDropdown;
-		initializeCategoryField;
-		initializeDescriptionField;
-		initializeEndingDateField;
-		configureInteractions.
 	workingContext := aWorkingContext.
-	notesRepository := NotesRepository new
+	self
+		initializeDescriptionField;
+		initializeCategoryField;
+		initializeEndingDateField;
+		initializeAssignedEmployeeDropdown;
+		initializeAcceptButton;
+		initializeCancelButton;
+		configureInteractions
 ]
 
 { #category : #initialization }
 NoteRegistrationWebView >> initializeEndingDateField [
 
-	endingDateField := self componentSupplier
-		dateFieldApplying: [ :theField | "theField setPlaceholderTo: 'Select the ending date'" ]
-]
-
-{ #category : #initialization }
-NoteRegistrationWebView >> initializeRegistrationButton [
-
-	registrationButton := self componentSupplier
-		asynchronicButtonLabeled: 'Create note'
-		applying: [ :theButton | theButton beDisabled ]
+	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]
 ]
 
 { #category : #rendering }
 NoteRegistrationWebView >> renderContentOn: aCanvas [
-
-	"This is the main rendering method of WAPainter. It will be called with an instance of
-	the Renderer class returned by #rendererClass whenever this Painter is asked to render
-	itself. By convention, implementations of this method that expect a Canvas renderer
-	use 'html' as the parameter name."
 
 	aCanvas
 		render: descriptionField;
 		render: categoryField;
 		render: endingDateField;
 		render: assignedEmployeeDropdown;
-		render: registrationButton
+		render: acceptButton;
+		render: cancelButton
 ]
