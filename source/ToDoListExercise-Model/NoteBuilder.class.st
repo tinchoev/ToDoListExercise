@@ -3,9 +3,9 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'description',
-		'category',
-		'endingDate',
-		'assignedEmployee'
+		'optionalCategory',
+		'optionalEndingDate',
+		'optionalAssignedEmployee'
 	],
 	#category : #'ToDoListExercise-Model'
 }
@@ -27,32 +27,36 @@ NoteBuilder class >> describedBy: aDescription [
 { #category : #accessing }
 NoteBuilder >> assignedEmployee [
 
-	^ assignedEmployee
+	^ optionalAssignedEmployee
 ]
 
 { #category : #modifying }
 NoteBuilder >> assignedTo: anEmployee from: anEmployeesRepository [
 
 	anEmployeesRepository assertIsAdded: anEmployee for: 'create note'.
-	assignedEmployee := Optional containing: anEmployee
+	optionalAssignedEmployee := Optional containing: anEmployee
 ]
 
 { #category : #creation }
 NoteBuilder >> build [
 
-	^ Note newFrom: self
+	^ Note
+		describedBy: description
+		optionallyCategorizedBy: optionalCategory
+		optionallyEndingIn: optionalEndingDate
+		optionallyAssignedTo: optionalAssignedEmployee
 ]
 
 { #category : #modifying }
 NoteBuilder >> categorizedBy: aCategory [
 
-	category := Optional containing: aCategory
+	optionalCategory := Optional containing: aCategory
 ]
 
 { #category : #accessing }
 NoteBuilder >> category [
 
-	^ category
+	^ optionalCategory
 ]
 
 { #category : #accessing }
@@ -64,20 +68,20 @@ NoteBuilder >> description [
 { #category : #accessing }
 NoteBuilder >> endingDate [
 
-	^ endingDate
+	^ optionalEndingDate
 ]
 
 { #category : #modifying }
 NoteBuilder >> endingIn: anEndingDate [
 
-	endingDate := Optional containing: anEndingDate
+	optionalEndingDate := Optional containing: anEndingDate
 ]
 
 { #category : #initialization }
 NoteBuilder >> initializeDescribedBy: aDescription [
 
 	description := aDescription.
-	category := Optional unusedBecauseAll: 'Category not assigned yet'.
-	assignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
-	endingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'
+	optionalCategory := Optional unusedBecauseAll: 'Category not assigned yet'.
+	optionalAssignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
+	optionalEndingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'
 ]

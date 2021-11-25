@@ -17,8 +17,13 @@ Class {
 }
 
 { #category : #'instance creation' }
-Note class >> newFrom: aBuilder [
-	^ self new initializeWith: aBuilder
+Note class >> describedBy: aDescription optionallyCategorizedBy: optionalCategory optionallyEndingIn: optionalEndingDate optionallyAssignedTo: optionalAssignedEmployee [
+
+	^ self new
+		initializeDescribedBy: aDescription
+		optionallyCategorizedBy: optionalCategory
+		optionallyEndingIn: optionalEndingDate
+		optionallyAssignedTo: optionalAssignedEmployee
 ]
 
 { #category : #asserting }
@@ -93,13 +98,13 @@ Note >> endingDate [
 ]
 
 { #category : #initialization }
-Note >> initializeWith: aNoteBuild [
+Note >> initializeDescribedBy: aDescription optionallyCategorizedBy: optionalCategory optionallyEndingIn: optionalEndingDate optionallyAssignedTo: optionalAssignedEmployee [
 
-	description := aNoteBuild description.
-	category := aNoteBuild category.
-	endingDate := aNoteBuild endingDate.
+	description := aDescription.
+	category := optionalCategory.
+	endingDate := optionalEndingDate.
 	state := 'open'.
-	assignedEmployee := aNoteBuild assignedEmployee
+	assignedEmployee := optionalAssignedEmployee
 ]
 
 { #category : #modifying }
