@@ -10,22 +10,6 @@ Class {
 	#category : #'ToDoListExercise-Tests'
 }
 
-{ #category : #asserting }
-NoteBuilderTest >> assertContentOf: aUsedOptional equals: aContent [
-
-	aUsedOptional
-		withContentDo: [ :content | self assert: content equals: aContent ]
-		ifUnused: [ self fail ]
-]
-
-{ #category : #asserting }
-NoteBuilderTest >> assertExplanationOf: anUnusedOptional equals: anExplanation [
-
-	anUnusedOptional
-		withContentDo: [ self fail ]
-		ifUnused: [ :explanation | self assert: explanation equals: anExplanation ]
-]
-
 { #category : #running }
 NoteBuilderTest >> setUp [
 
@@ -67,12 +51,13 @@ NoteBuilderTest >> testCreateNoteWithAllItsAttributes [
 		categorizedBy: 'aCategory';
 		endingIn: January first , 2022;
 		assignedTo: anEmployee from: anEmployeesRepo;
-		build.
-	self assertContentOf: aNote category equals: 'aCategory'.
-	self assertContentOf: aNote endingDate equals: January first , 2022.
-	aNote assignedEmployee
-		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
-		ifUnused: [ self fail ]
+		build;
+		withCategoryDo: [ :category | self assert: category equals: 'aCategory' ]
+			ifUncategorized: [ self fail ];
+		withEndingDateDo: [ :date | self assert: date equals: January first , 2022 ]
+			ifNone: [ self fail ];
+		withAssignedEmployeeDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+			ifUnassigned: [ self fail ]
 ]
 
 { #category : #tests }
@@ -81,10 +66,13 @@ NoteBuilderTest >> testCreateNoteWithoutAssignedEmployee [
 	aNote
 		categorizedBy: 'aCategory';
 		endingIn: January first , 2022;
-		build.
-	self assertContentOf: aNote category equals: 'aCategory'.
-	self assertContentOf: aNote endingDate equals: January first , 2022.
-	self assertExplanationOf: aNote assignedEmployee equals: 'Employee not assigned yet'
+		build;
+		withCategoryDo: [ :category | self assert: category equals: 'aCategory' ]
+			ifUncategorized: [ self fail ];
+		withEndingDateDo: [ :date | self assert: date equals: January first , 2022 ]
+			ifNone: [ self fail ];
+		withAssignedEmployeeDo: [ self fail ]
+			ifUnassigned: [ :explanation | self assert: explanation equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -93,12 +81,13 @@ NoteBuilderTest >> testCreateNoteWithoutCategory [
 	aNote
 		endingIn: January first , 2022;
 		assignedTo: anEmployee from: anEmployeesRepo;
-		build.
-	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
-	self assertContentOf: aNote endingDate equals: January first , 2022.
-	aNote assignedEmployee
-		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
-		ifUnused: [ self fail ]
+		build;
+		withCategoryDo: [ self fail ]
+			ifUncategorized: [ :explanation | self assert: explanation equals: 'Category not assigned yet' ];
+		withEndingDateDo: [ :date | self assert: date equals: January first , 2022 ]
+			ifNone: [ self fail ];
+		withAssignedEmployeeDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+			ifUnassigned: [ self fail ]
 ]
 
 { #category : #tests }
@@ -106,10 +95,13 @@ NoteBuilderTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
 
 	aNote
 		endingIn: January first , 2022;
-		build.
-	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
-	self assertContentOf: aNote endingDate equals: January first , 2022.
-	self assertExplanationOf: aNote assignedEmployee equals: 'Employee not assigned yet'
+		build;
+		withCategoryDo: [ self fail ]
+			ifUncategorized: [ :explanation | self assert: explanation equals: 'Category not assigned yet' ];
+		withEndingDateDo: [ :date | self assert: date equals: January first , 2022 ]
+			ifNone: [ self fail ];
+		withAssignedEmployeeDo: [ self fail ]
+			ifUnassigned: [ :explanation | self assert: explanation equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -117,21 +109,26 @@ NoteBuilderTest >> testCreateNoteWithoutCategoryAndEndingDate [
 
 	aNote
 		assignedTo: anEmployee from: anEmployeesRepo;
-		build.
-	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
-	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
-	aNote assignedEmployee
-		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
-		ifUnused: [ self fail ]
+		build;
+		withCategoryDo: [ self fail ]
+			ifUncategorized: [ :explanation | self assert: explanation equals: 'Category not assigned yet' ];
+		withEndingDateDo: [ self fail ]
+			ifNone: [ :explanation | self assert: explanation equals: 'Ending date not assigned yet' ];
+		withAssignedEmployeeDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+			ifUnassigned: [ self fail ]
 ]
 
 { #category : #tests }
 NoteBuilderTest >> testCreateNoteWithoutCategoryEndingDateAndAssignedEmployee [
 
-	aNote build.
-	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
-	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
-	self assertExplanationOf: aNote assignedEmployee equals: 'Employee not assigned yet'
+	aNote
+		build;
+		withCategoryDo: [ self fail ]
+			ifUncategorized: [ :explanation | self assert: explanation equals: 'Category not assigned yet' ];
+		withEndingDateDo: [ self fail ]
+			ifNone: [ :explanation | self assert: explanation equals: 'Ending date not assigned yet' ];
+		withAssignedEmployeeDo: [ self fail ]
+			ifUnassigned: [ :explanation | self assert: explanation equals: 'Employee not assigned yet' ]
 ]
 
 { #category : #tests }
@@ -140,12 +137,13 @@ NoteBuilderTest >> testCreateNoteWithoutEndingDate [
 	aNote
 		categorizedBy: 'aCategory';
 		assignedTo: anEmployee from: anEmployeesRepo;
-		build.
-	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
-	self assertContentOf: aNote category equals: 'aCategory'.
-	aNote assignedEmployee
-		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
-		ifUnused: [ self fail ]
+		build;
+		withCategoryDo: [ :category | self assert: category equals: 'aCategory' ]
+			ifUncategorized: [ self fail ];
+		withEndingDateDo: [ self fail ]
+			ifNone: [ :explanation | self assert: explanation equals: 'Ending date not assigned yet' ];
+		withAssignedEmployeeDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+			ifUnassigned: [ self fail ]
 ]
 
 { #category : #tests }
@@ -153,8 +151,11 @@ NoteBuilderTest >> testCreateNoteWithoutEndingDateAndAssignedEmployee [
 
 	aNote
 		categorizedBy: 'aCategory';
-		build.
-	self assertContentOf: aNote category equals: 'aCategory'.
-	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
-	self assertExplanationOf: aNote assignedEmployee equals: 'Employee not assigned yet'
+		build;
+		withCategoryDo: [ :category | self assert: category equals: 'aCategory' ]
+			ifUncategorized: [ self fail ];
+		withEndingDateDo: [ self fail ]
+			ifNone: [ :explanation | self assert: explanation equals: 'Ending date not assigned yet' ];
+		withAssignedEmployeeDo: [ self fail ]
+			ifUnassigned: [ :explanation | self assert: explanation equals: 'Employee not assigned yet' ]
 ]

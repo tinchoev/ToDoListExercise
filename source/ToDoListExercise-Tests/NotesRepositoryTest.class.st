@@ -207,9 +207,9 @@ NotesRepositoryTest >> testModifyEndingDateOfNote [
 		build.
 	notesRepo addNote: note.
 	notesRepo modifyEndingDateOf: note to: January second , 2022.
-	note endingDate
-		withContentDo: [ :aDate | self assert: aDate equals: January second , 2022 ]
-		ifUnused: [ self fail ]
+	note
+		withEndingDateDo: [ :aDate | self assert: aDate equals: January second , 2022 ]
+		ifNone: [ self fail ]
 ]
 
 { #category : #tests }
@@ -311,10 +311,10 @@ NotesRepositoryTest >> testReassignANoteToAnotherEmployee [
 		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
-	note reassignTo: goku.
-	note assignedEmployee
-		withContentDo: [ :employee | self assert: employee name equals: 'Goku' ]
-		ifUnused: [ self fail ]
+	note
+		reassignTo: goku;
+		withAssignedEmployeeDo: [ :employee | self assert: employee name equals: 'Goku' ]
+			ifUnassigned: [ self fail ]
 ]
 
 { #category : #tests }

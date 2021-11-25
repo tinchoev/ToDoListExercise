@@ -85,3 +85,15 @@ NoteBuilder >> initializeDescribedBy: aDescription [
 	optionalAssignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
 	optionalEndingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'
 ]
+
+{ #category : #modifying }
+NoteBuilder >> withAssignedEmployeeDo: aBlock ifUnassigned: anotherBlock [
+
+	^ optionalAssignedEmployee withContentDo: aBlock ifUnused: anotherBlock
+]
+
+{ #category : #modifying }
+NoteBuilder >> withCategoryDo: aBlock ifUncategorized: anotherBlock [
+
+	^ optionalCategory withContentDo: aBlock ifUnused: anotherBlock
+]

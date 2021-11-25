@@ -3,10 +3,10 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'description',
-		'category',
-		'endingDate',
 		'state',
-		'assignedEmployee'
+		'categoryOptional',
+		'endingDateOptional',
+		'assignedEmployeeOptional'
 	],
 	#classInstVars : [
 		'description',
@@ -29,7 +29,7 @@ Note class >> describedBy: aDescription optionallyCategorizedBy: optionalCategor
 { #category : #asserting }
 Note >> assertNoteDoesntHaveAnEndingDate [
 
-	endingDate
+	endingDateOptional
 		withContentDo: [ AssertionFailed signal: 'Cant remove the note because it has an ending date' ]
 		ifUnused: [  ]
 ]
@@ -49,16 +49,10 @@ Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
 		assertStateIsNot: 'finished' for: aMethod
 ]
 
-{ #category : #accessing }
-Note >> assignedEmployee [
-
-	^ assignedEmployee
-]
-
 { #category : #modifying }
 Note >> beFinished [
 
-	assignedEmployee
+	assignedEmployeeOptional
 		withContentDo: [ state := 'finished' ]
 		ifUnused:
 			[ AssertionFailed signal: 'Cant modify state of note to ''finished'' because it does not have an employee assigned' ]
@@ -67,7 +61,7 @@ Note >> beFinished [
 { #category : #modifying }
 Note >> beInProgress [
 
-	assignedEmployee
+	assignedEmployeeOptional
 		withContentDo: [ state := 'in progress' ]
 		ifUnused:
 			[ AssertionFailed signal: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned' ]
@@ -80,48 +74,54 @@ Note >> beOpen [
 ]
 
 { #category : #accessing }
-Note >> category [
-
-	^ category
-]
-
-{ #category : #accessing }
 Note >> description [
 
 	^ description
-]
-
-{ #category : #accessing }
-Note >> endingDate [
-
-	^ endingDate
 ]
 
 { #category : #initialization }
 Note >> initializeDescribedBy: aDescription optionallyCategorizedBy: optionalCategory optionallyEndingIn: optionalEndingDate optionallyAssignedTo: optionalAssignedEmployee [
 
 	description := aDescription.
-	category := optionalCategory.
-	endingDate := optionalEndingDate.
+	categoryOptional := optionalCategory.
+	endingDateOptional := optionalEndingDate.
 	state := 'open'.
-	assignedEmployee := optionalAssignedEmployee
+	assignedEmployeeOptional := optionalAssignedEmployee
 ]
 
 { #category : #modifying }
 Note >> modifyEndingDateTo: aDate [
 
-	endingDate := Optional containing: aDate
+	endingDateOptional := Optional containing: aDate
 ]
 
 { #category : #modifying }
 Note >> reassignTo: anEmployee [
 
 	self assertStateIsNotInProgressNorFinishedFor: 'reassign'.
-	assignedEmployee := Optional containing: anEmployee
+	assignedEmployeeOptional := Optional containing: anEmployee
 ]
 
 { #category : #accessing }
 Note >> state [
 
 	^ state
+]
+
+{ #category : #modifying }
+Note >> withAssignedEmployeeDo: aBlock ifUnassigned: anotherBlock [
+
+	^ assignedEmployeeOptional withContentDo: aBlock ifUnused: anotherBlock
+]
+
+{ #category : #modifying }
+Note >> withCategoryDo: aBlock ifUncategorized: anotherBlock [
+
+	^ categoryOptional withContentDo: aBlock ifUnused: anotherBlock
+]
+
+{ #category : #modifying }
+Note >> withEndingDateDo: aBlock ifNone: anotherBlock [
+
+	^ endingDateOptional withContentDo: aBlock ifUnused: anotherBlock
 ]
