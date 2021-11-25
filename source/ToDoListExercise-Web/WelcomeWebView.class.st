@@ -7,5 +7,7 @@ Class {
 { #category : #rendering }
 WelcomeWebView >> renderContentOn: aCanvas [
 
-	aCanvas render: ( HeadingWebView displaying: 'Welcome' withLevel: 1 )
+	aCanvas
+		render:
+			( HeadingWebView displaying: 'Welcome to the ToDoListExercise!' withLevel: 1 applying: [ :title |  ] )
 ]

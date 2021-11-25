@@ -16,7 +16,7 @@ Class {
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 NoteRegistrationWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
@@ -110,8 +110,7 @@ NoteRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
 { #category : #initialization }
 NoteRegistrationWebView >> initializeEndingDateField [
 
-	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]".
-	endingDateField on change serializeIt"
+	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]
 ]
 
 { #category : #rendering }

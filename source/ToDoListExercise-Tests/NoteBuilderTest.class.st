@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'aNote',
 		'aNotesRepo',
-		'anEmployeesRepo'
+		'anEmployeesRepo',
+		'anEmployee'
 	],
 	#category : #'ToDoListExercise-Tests'
 }
@@ -31,8 +32,9 @@ NoteBuilderTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
 
 	aNotesRepo := NotesRepository new.
+	anEmployee := Employee named: 'anEmployee'.
 	anEmployeesRepo := EmployeesRepository new
-		addEmployee: 'anEmployee';
+		addEmployee: anEmployee;
 		yourself.
 	aNote := NoteBuilder describedBy: 'aDescription'
 ]
@@ -42,11 +44,11 @@ NoteBuilderTest >> testCantCreateNoteAssignedToAnEmployeeThatIsntLoaded [
 
 	self
 		should: [ aNote
-				assignedTo: 'Martin' from: anEmployeesRepo;
+				assignedTo: ( Employee named: 'Martin' ) from: anEmployeesRepo;
 				build
 			]
 		raise: AssertionFailed
-		withMessageText: 'Cant create note because the employee isnt loaded'
+		withMessageText: 'Cant create note because the employee isnt added'
 ]
 
 { #category : #tests }
@@ -64,11 +66,13 @@ NoteBuilderTest >> testCreateNoteWithAllItsAttributes [
 	aNote
 		categorizedBy: 'aCategory';
 		endingIn: January first , 2022;
-		assignedTo: 'anEmployee' from: anEmployeesRepo;
+		assignedTo: anEmployee from: anEmployeesRepo;
 		build.
 	self assertContentOf: aNote category equals: 'aCategory'.
 	self assertContentOf: aNote endingDate equals: January first , 2022.
-	self assertContentOf: aNote assignedEmployee equals: 'anEmployee'
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
@@ -88,11 +92,13 @@ NoteBuilderTest >> testCreateNoteWithoutCategory [
 
 	aNote
 		endingIn: January first , 2022;
-		assignedTo: 'anEmployee' from: anEmployeesRepo;
+		assignedTo: anEmployee from: anEmployeesRepo;
 		build.
 	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
 	self assertContentOf: aNote endingDate equals: January first , 2022.
-	self assertContentOf: aNote assignedEmployee equals: 'anEmployee'
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
@@ -110,11 +116,13 @@ NoteBuilderTest >> testCreateNoteWithoutCategoryAndAssignedEmployee [
 NoteBuilderTest >> testCreateNoteWithoutCategoryAndEndingDate [
 
 	aNote
-		assignedTo: 'anEmployee' from: anEmployeesRepo;
+		assignedTo: anEmployee from: anEmployeesRepo;
 		build.
 	self assertExplanationOf: aNote category equals: 'Category not assigned yet'.
 	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
-	self assertContentOf: aNote assignedEmployee equals: 'anEmployee'
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }
@@ -131,11 +139,13 @@ NoteBuilderTest >> testCreateNoteWithoutEndingDate [
 
 	aNote
 		categorizedBy: 'aCategory';
-		assignedTo: 'anEmployee' from: anEmployeesRepo;
+		assignedTo: anEmployee from: anEmployeesRepo;
 		build.
 	self assertExplanationOf: aNote endingDate equals: 'Ending date not assigned yet'.
 	self assertContentOf: aNote category equals: 'aCategory'.
-	self assertContentOf: aNote assignedEmployee equals: 'anEmployee'
+	aNote assignedEmployee
+		withContentDo: [ :employee | self assert: employee name equals: 'anEmployee' ]
+		ifUnused: [ self fail ]
 ]
 
 { #category : #tests }

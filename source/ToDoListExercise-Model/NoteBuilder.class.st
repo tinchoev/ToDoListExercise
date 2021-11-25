@@ -17,7 +17,7 @@ NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
 		ifTrue: [ AssertionFailed signal: 'Note couldnt be created because it didnt have description' ]
 ]
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 NoteBuilder class >> describedBy: aDescription [
 
 	self assertDescriptionIsNotEmpty: aDescription.
@@ -33,7 +33,7 @@ NoteBuilder >> assignedEmployee [
 { #category : #modifying }
 NoteBuilder >> assignedTo: anEmployee from: anEmployeesRepository [
 
-	anEmployeesRepository assertIsLoaded: anEmployee for: 'create note'.
+	anEmployeesRepository assertIsAdded: anEmployee for: 'create note'.
 	assignedEmployee := Optional containing: anEmployee
 ]
 

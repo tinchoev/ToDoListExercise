@@ -11,7 +11,7 @@ Class {
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 NoteStateModificationWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext

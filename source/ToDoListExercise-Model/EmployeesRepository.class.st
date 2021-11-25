@@ -22,11 +22,11 @@ EmployeesRepository >> assertEmployeeIsNotAdded: anEmployee [
 ]
 
 { #category : #asserting }
-EmployeesRepository >> assertIsLoaded: anEmployee for: anAction [
+EmployeesRepository >> assertIsAdded: anEmployee for: anAction [
 
 	( employees includes: anEmployee )
 		ifFalse: [ AssertionFailed
-				signal: ( 'Cant <1s> because the employee isnt loaded' expandMacrosWith: anAction ) ]
+				signal: ( 'Cant <1s> because the employee isnt added' expandMacrosWith: anAction ) ]
 ]
 
 { #category : #accessing }

@@ -16,7 +16,7 @@ Class {
 	#category : #'ToDoListExercise-Model'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 Note class >> newFrom: aBuilder [
 	^ self new initializeWith: aBuilder
 ]

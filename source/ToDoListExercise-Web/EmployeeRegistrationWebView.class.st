@@ -10,7 +10,7 @@ Class {
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 EmployeeRegistrationWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext

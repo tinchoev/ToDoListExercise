@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'notesRepo',
 		'noteWithDescription',
-		'employeesRepo'
+		'employeesRepo',
+		'martin'
 	],
 	#category : #'ToDoListExercise-Tests'
 }
@@ -15,8 +16,9 @@ NotesRepositoryTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
 
 	notesRepo := NotesRepository new.
+	martin := Employee named: 'Martin'.
 	employeesRepo := EmployeesRepository new
-		addEmployee: 'Martin';
+		addEmployee: martin;
 		yourself.
 	noteWithDescription := NoteBuilder describedBy: 'aDescription'
 ]
@@ -45,7 +47,7 @@ NotesRepositoryTest >> testCantModifyEndingDateOfANoteThatIsntLoaded [
 				to: January second , 2022
 			]
 		raise: AssertionFailed
-		withMessageText: 'Cant modify ending date because the note isnt loaded'
+		withMessageText: 'Cant modify ending date because the note isnt added'
 ]
 
 { #category : #tests }
@@ -74,20 +76,20 @@ NotesRepositoryTest >> testCantModifyStateOfNoteThatIsntLoaded [
 	self
 		should: [ notesRepo beInProgress: note ]
 		raise: AssertionFailed
-		withMessageText: 'Cant modify state to ''in progress'' because the note isnt loaded'.
+		withMessageText: 'Cant modify state to ''in progress'' because the note isnt added'.
 	self
 		should: [ notesRepo beFinished: note ]
 		raise: AssertionFailed
-		withMessageText: 'Cant modify state to ''finished'' because the note isnt loaded'
+		withMessageText: 'Cant modify state to ''finished'' because the note isnt added'
 ]
 
 { #category : #tests }
 NotesRepositoryTest >> testCantReassignANoteThatIsntLoaded [
 
 	self
-		should: [ notesRepo reassign: noteWithDescription build to: 'Martin' from: employeesRepo ]
+		should: [ notesRepo reassign: noteWithDescription build to: martin from: employeesRepo ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign to another employee because the note isnt loaded'
+		withMessageText: 'Cant reassign to another employee because the note isnt added'
 ]
 
 { #category : #tests }
@@ -96,12 +98,12 @@ NotesRepositoryTest >> testCantReassignNoteBecauseItIsFinished [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
 	self
-		should: [ notesRepo reassign: note to: 'Martin' from: employeesRepo ]
+		should: [ notesRepo reassign: note to: martin from: employeesRepo ]
 		raise: AssertionFailed
 		withMessageText: 'Cant reassign note because it is finished'
 ]
@@ -109,16 +111,17 @@ NotesRepositoryTest >> testCantReassignNoteBecauseItIsFinished [
 { #category : #tests }
 NotesRepositoryTest >> testCantReassignNoteBecauseItIsInProgress [
 
-	| note |
+	| note mickey |
 
-	employeesRepo addEmployee: 'Mickey'.
+	mickey := Employee named: 'Mickey'.
+	employeesRepo addEmployee: mickey.
 	note := noteWithDescription
-		assignedTo: 'Mickey' from: employeesRepo;
+		assignedTo: mickey from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
 	self
-		should: [ notesRepo reassign: note to: 'Martin' from: employeesRepo ]
+		should: [ notesRepo reassign: note to: martin from: employeesRepo ]
 		raise: AssertionFailed
 		withMessageText: 'Cant reassign note because it is in progress'
 ]
@@ -129,13 +132,13 @@ NotesRepositoryTest >> testCantReassignNoteToAnEmployeeThatIsntLoaded [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	self
-		should: [ notesRepo reassign: note to: 'Goofy' from: employeesRepo ]
+		should: [ notesRepo reassign: note to: ( Employee named: 'Goofy' ) from: employeesRepo ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign note because the employee isnt loaded'
+		withMessageText: 'Cant reassign note because the employee isnt added'
 ]
 
 { #category : #tests }
@@ -144,7 +147,7 @@ NotesRepositoryTest >> testCantRemoveANoteThatIsntLoaded [
 	self
 		should: [ notesRepo remove: noteWithDescription build ]
 		raise: AssertionFailed
-		withMessageText: 'Cant remove note because the note isnt loaded'
+		withMessageText: 'Cant remove note because the note isnt added'
 ]
 
 { #category : #tests }
@@ -168,7 +171,7 @@ NotesRepositoryTest >> testCantRemoveNoteBecauseItIsFinished [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
@@ -184,7 +187,7 @@ NotesRepositoryTest >> testCantRemoveNoteBecauseItIsInProgress [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
@@ -215,7 +218,7 @@ NotesRepositoryTest >> testModifyStateFromFinishedToInProgress [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
@@ -230,7 +233,7 @@ NotesRepositoryTest >> testModifyStateFromFinishedToOpen [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
@@ -245,7 +248,7 @@ NotesRepositoryTest >> testModifyStateFromInProgressToFinished [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
@@ -260,7 +263,7 @@ NotesRepositoryTest >> testModifyStateFromInProgressToOpen [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
@@ -275,7 +278,7 @@ NotesRepositoryTest >> testModifyStateFromOpenToFinished [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	self assert: note state equals: 'open'.
@@ -289,7 +292,7 @@ NotesRepositoryTest >> testModifyStateFromOpenToInProgress [
 	| note |
 
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
 	self assert: note state equals: 'open'.
@@ -300,16 +303,17 @@ NotesRepositoryTest >> testModifyStateFromOpenToInProgress [
 { #category : #tests }
 NotesRepositoryTest >> testReassignANoteToAnotherEmployee [
 
-	| note |
+	| note goku |
 
-	employeesRepo addEmployee: 'Goku'.
+	goku := Employee named: 'Goku'.
+	employeesRepo addEmployee: goku.
 	note := noteWithDescription
-		assignedTo: 'Martin' from: employeesRepo;
+		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
-	note reassignTo: 'Goku'.
+	note reassignTo: goku.
 	note assignedEmployee
-		withContentDo: [ :employee | self assert: employee equals: 'Goku' ]
+		withContentDo: [ :employee | self assert: employee name equals: 'Goku' ]
 		ifUnused: [ self fail ]
 ]
 

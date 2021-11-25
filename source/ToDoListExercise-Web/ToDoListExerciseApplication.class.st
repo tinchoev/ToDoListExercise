@@ -18,7 +18,7 @@ ToDoListExerciseApplication class >> applicationTitle [
 { #category : #accessing }
 ToDoListExerciseApplication class >> handlerName [
 
-	^ 'to-do-list-exercise'
+	^ 'toDoListExercise'
 ]
 
 { #category : #accessing }
@@ -27,7 +27,7 @@ ToDoListExerciseApplication class >> sessionClass [
 	^ ToDoListExerciseSession
 ]
 
-{ #category : #accessing }
+{ #category : #'private utility' }
 ToDoListExerciseApplication class >> start [
 
 	ToDoListExerciseApplication registerAsDevelopmentApplication.
@@ -36,7 +36,7 @@ ToDoListExerciseApplication class >> start [
 		start
 ]
 
-{ #category : #accessing }
+{ #category : #'private utility' }
 ToDoListExerciseApplication class >> stop [
 
 	ZnServer stopDefault.
