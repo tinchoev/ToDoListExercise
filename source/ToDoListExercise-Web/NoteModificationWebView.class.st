@@ -1,31 +1,30 @@
 Class {
-	#name : #NoteRegistrationWebView,
+	#name : #NoteModificationWebView,
 	#superclass : #WAPainter,
 	#instVars : [
 		'workingContext',
 		'acceptButton',
 		'cancelButton',
-		'noteWebView'
-	],
-	#classInstVars : [
-		'aWorkingContext'
+		'noteWebView',
+		'note',
+		'noteToUpdate'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
 { #category : #'instance creation' }
-NoteRegistrationWebView class >> displayedIn: aWorkingContext [
+NoteModificationWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
 ]
 
 { #category : #initialization }
-NoteRegistrationWebView >> configureInteractions [
+NoteModificationWebView >> configureInteractions [
 
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				addNote: noteWebView model;
+				updateNote: note with: noteWebView model;
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
@@ -37,7 +36,7 @@ NoteRegistrationWebView >> configureInteractions [
 ]
 
 { #category : #initialization }
-NoteRegistrationWebView >> initializeAcceptButton [
+NoteModificationWebView >> initializeAcceptButton [
 
 	acceptButton := self componentSupplier
 		asynchronicButtonLabeled: 'Accept'
@@ -45,7 +44,7 @@ NoteRegistrationWebView >> initializeAcceptButton [
 ]
 
 { #category : #initialization }
-NoteRegistrationWebView >> initializeCancelButton [
+NoteModificationWebView >> initializeCancelButton [
 
 	cancelButton := self componentSupplier
 		asynchronicButtonLabeled: 'Cancel'
@@ -53,18 +52,26 @@ NoteRegistrationWebView >> initializeCancelButton [
 ]
 
 { #category : #initialization }
-NoteRegistrationWebView >> initializeDisplayedIn: aWorkingContext [
+NoteModificationWebView >> initializeDisplayedIn: aWorkingContext [
 
 	workingContext := aWorkingContext.
-	noteWebView := NoteWebView displayedIn: workingContext.
+
 	self
+		initializeNoteWebView;
 		initializeAcceptButton;
 		initializeCancelButton;
 		configureInteractions
 ]
 
-{ #category : #rendering }
-NoteRegistrationWebView >> renderContentOn: aCanvas [
+{ #category : #initialization }
+NoteModificationWebView >> initializeNoteWebView [
+
+	noteWebView := NoteWebView displayedIn: workingContext.
+	noteWebView updateModelWith: noteToUpdate
+]
+
+{ #category : #initialization }
+NoteModificationWebView >> renderContentOn: aCanvas [
 
 	aCanvas
 		render: noteWebView;

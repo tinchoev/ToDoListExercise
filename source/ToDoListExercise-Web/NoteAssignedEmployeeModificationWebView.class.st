@@ -79,9 +79,8 @@ NoteAssignedEmployeeModificationWebView >> initializeDisplayedIn: aWorkingContex
 { #category : #initialization }
 NoteAssignedEmployeeModificationWebView >> initializeEmployeeDropdown [
 
-	employeeDropdown := self componentSupplier
-		dropdownListApplying: [ :dropdown |  ].
-	employeeDropdown allowAnyOf: workingContext employees
+	employeeDropdown := self componentSupplier dropdownListApplying: [ :dropdown |  ].
+	employeeDropdown allowAnyOf: ( workingContext employees collect: [ :employee | employee name ] )
 ]
 
 { #category : #rendering }

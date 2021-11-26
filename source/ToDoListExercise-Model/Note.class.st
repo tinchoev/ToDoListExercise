@@ -37,8 +37,10 @@ Note >> assertNoteDoesntHaveAnEndingDate [
 { #category : #asserting }
 Note >> assertStateIsNot: aState for: aMethod [
 
-	state = aState
-		ifTrue: [ AssertionFailed signal: ( 'Cant <1s> note because it is <2s>' expandMacrosWith: aMethod with: aState ) ]
+	AssertionChecker
+		refuse: state = aState
+		because: ( 'Cant <1s> note because it is <2s>' expandMacrosWith: aMethod with: aState )
+		raising: AssertionFailed
 ]
 
 { #category : #asserting }

@@ -8,7 +8,8 @@ Class {
 		'removeButton',
 		'modifyStateButton',
 		'modifyEndingDateButton',
-		'modifyEmployeeButton'
+		'modifyEmployeeButton',
+		'modifyButton'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -43,6 +44,7 @@ NotesWebView >> initializeDisplayedIn: aWorkingContext [
 		initializeStateModificationButton;
 		initializeEndingDateModificationButton;
 		initializeAssignedEmployeeModificationButton;
+		initializeModifyButton;
 		initializeTableWebView
 ]
 
@@ -55,6 +57,18 @@ NotesWebView >> initializeEndingDateModificationButton [
 
 	modifyEndingDateButton on trigger
 		serverDo: [ workingContext setCurrentWebViewTo: ( NoteEndingDateModificationWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView
+]
+
+{ #category : #initialization }
+NotesWebView >> initializeModifyButton [
+
+	modifyButton := self componentSupplier
+		asynchronicButtonLabeled: 'Modify note'
+		applying: [ :theButton |  ].
+
+	modifyButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext ) ];
 		render: workingContext identifiedCurrentWebView
 ]
 
@@ -106,23 +120,30 @@ NotesWebView >> initializeTableWebView [
 		addColumn: [ :column | 
 			column
 				titled: 'Categoría';
-				rendering: [ :note | note category withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering:
+						[ :note | note withCategoryDo: [ :content | content ] ifUncategorized: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Ending Date';
-				rendering: [ :note | note endingDate withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering: [ :note | note withEndingDateDo: [ :content | content ] ifNone: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Assigned Employee';
-				rendering: [ :note | note assignedEmployee withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering:
+						[ :note | note withAssignedEmployeeDo: [ :content | content ] ifUnassigned: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'State';
 				rendering: [ :note | note state ]
 			];
+		"addColumn: [ :column | 
+			column
+				titled: 'Modify';
+				rendering: modifyButton
+			];"
 		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]
 

@@ -13,8 +13,10 @@ Class {
 { #category : #asserting }
 NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
 
-	aDescription isEmpty
-		ifTrue: [ AssertionFailed signal: 'Note couldnt be created because it didnt have description' ]
+	AssertionChecker
+		refuse: aDescription isEmpty
+		because: 'Note couldnt be created because it didnt have description'
+		raising: AssertionFailed
 ]
 
 { #category : #'instance creation' }
@@ -50,7 +52,9 @@ NoteBuilder >> build [
 { #category : #modifying }
 NoteBuilder >> categorizedBy: aCategory [
 
-	optionalCategory := Optional containing: aCategory
+	aCategory isEmpty
+		ifTrue: [ optionalCategory := Optional unusedBecauseAll: 'Category not assigned yet' ]
+		ifFalse: [ optionalCategory := Optional containing: aCategory ]
 ]
 
 { #category : #accessing }
