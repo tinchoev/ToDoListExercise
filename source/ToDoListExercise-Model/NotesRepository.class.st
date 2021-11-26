@@ -16,8 +16,10 @@ NotesRepository >> addNote: aNote [
 { #category : #asserting }
 NotesRepository >> assertIsAdded: aNote for: anAction [
 
-	( notes includes: aNote )
-		ifFalse: [ AssertionFailed signal: ( 'Cant <1s> because the note isnt added' expandMacrosWith: anAction ) ]
+	AssertionChecker
+		enforce: [ notes includes: aNote ]
+		because: ( 'Cant <1s> because the note isnt added' expandMacrosWith: anAction )
+		raising: AssertionFailed
 ]
 
 { #category : #modifying }

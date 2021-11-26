@@ -38,7 +38,7 @@ Note >> assertNoteDoesntHaveAnEndingDate [
 Note >> assertStateIsNot: aState for: aMethod [
 
 	AssertionChecker
-		refuse: state = aState
+		refuse: [ state = aState ]
 		because: ( 'Cant <1s> note because it is <2s>' expandMacrosWith: aMethod with: aState )
 		raising: AssertionFailed
 ]

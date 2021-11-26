@@ -73,6 +73,20 @@ NotesWebView >> initializeModifyButton [
 ]
 
 { #category : #initialization }
+NotesWebView >> initializeModifyButton: aNote [
+
+	modifyButton := self componentSupplier
+		asynchronicButtonLabeled: 'Modify note'
+		applying: [ :theButton |  ].
+
+	modifyButton on trigger
+		serverDo: [ workingContext setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext ) ];
+		render: workingContext identifiedCurrentWebView.
+		
+	^ modifyButton
+]
+
+{ #category : #initialization }
 NotesWebView >> initializeRegistrationButton [
 
 	registrationButton := self componentSupplier
@@ -139,11 +153,11 @@ NotesWebView >> initializeTableWebView [
 				titled: 'State';
 				rendering: [ :note | note state ]
 			];
-		"addColumn: [ :column | 
+		addColumn: [ :column | 
 			column
 				titled: 'Modify';
-				rendering: modifyButton
-			];"
+				rendering: [ :note | self initializeModifyButton: note ]
+			];
 		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]
 

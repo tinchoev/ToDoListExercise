@@ -18,7 +18,7 @@ EmployeesRepository >> addEmployee: anEmployee [
 EmployeesRepository >> assertEmployeeIsNotAdded: anEmployee [
 
 	AssertionChecker
-		refuse: ( employees includes: anEmployee )
+		refuse: [ employees includes: anEmployee ]
 		because: 'Cant add employee because it is already added'
 		raising: AssertionFailed
 ]
@@ -27,7 +27,7 @@ EmployeesRepository >> assertEmployeeIsNotAdded: anEmployee [
 EmployeesRepository >> assertIsAdded: anEmployee for: anAction [
 
 	AssertionChecker
-		refuse: ( employees includes: anEmployee )
+		enforce: [ employees includes: anEmployee ]
 		because: ( 'Cant <1s> because the employee isnt added' expandMacrosWith: anAction )
 		raising: AssertionFailed
 ]

@@ -11,7 +11,7 @@ Class {
 Employee class >> assertNameIsntEmpty: aName [
 
 	AssertionChecker
-		refuse: aName isEmpty
+		refuse: [ aName isEmpty ]
 		because: 'Employee couldnt be created because it didnt have name'
 		raising: AssertionFailed
 ]

@@ -14,7 +14,7 @@ Class {
 NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
 
 	AssertionChecker
-		refuse: aDescription isEmpty
+		refuse: [ aDescription isEmpty ]
 		because: 'Note couldnt be created because it didnt have description'
 		raising: AssertionFailed
 ]
@@ -100,4 +100,10 @@ NoteBuilder >> withAssignedEmployeeDo: aBlock ifUnassigned: anotherBlock [
 NoteBuilder >> withCategoryDo: aBlock ifUncategorized: anotherBlock [
 
 	^ optionalCategory withContentDo: aBlock ifUnused: anotherBlock
+]
+
+{ #category : #modifying }
+NoteBuilder >> withEndingDateDo: aBlock ifNone: anotherBlock [
+
+	^ optionalEndingDate withContentDo: aBlock ifUnused: anotherBlock
 ]
