@@ -25,14 +25,12 @@ NotesRepository >> assertIsAdded: aNote for: anAction [
 { #category : #modifying }
 NotesRepository >> beFinished: aNote [
 
-	self assertIsAdded: aNote for: 'modify state to ''finished'''.
 	aNote beFinished
 ]
 
 { #category : #modifying }
 NotesRepository >> beInProgress: aNote [
 
-	self assertIsAdded: aNote for: 'modify state to ''in progress'''.
 	aNote beInProgress
 ]
 

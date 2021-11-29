@@ -52,14 +52,14 @@ NotesContext >> modifyEndingDateOf: aDescription to: aDate [
 ]
 
 { #category : #modifying }
-NotesContext >> modifyStateOf: aDescription to: aState [
+NotesContext >> modifyStateOf: aNote to: aState [
 
 	aState = 'Open'
-		ifTrue: [ workingContext notesRepository beOpen: ( self noteDescriptedBy: aDescription ) ]
+		ifTrue: [ workingContext notesRepository beOpen: aNote ]
 		ifFalse: [ aState = 'In progress'
-				ifTrue: [ workingContext notesRepository beInProgress: ( self noteDescriptedBy: aDescription ) ]
+				ifTrue: [ workingContext notesRepository beInProgress: aNote ]
 				ifFalse: [ aState = 'Finished'
-						ifTrue: [ workingContext notesRepository beFinished: ( self noteDescriptedBy: aDescription ) ]
+						ifTrue: [ workingContext notesRepository beFinished: aNote ]
 					]
 			]
 ]

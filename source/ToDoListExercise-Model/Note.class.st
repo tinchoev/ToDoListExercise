@@ -55,7 +55,7 @@ Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
 Note >> beFinished [
 
 	assignedEmployeeOptional
-		withContentDo: [ state := 'finished' ]
+		withContentDo: [ state := 'Finished' ]
 		ifUnused:
 			[ AssertionFailed signal: 'Cant modify state of note to ''finished'' because it does not have an employee assigned' ]
 ]
@@ -64,7 +64,7 @@ Note >> beFinished [
 Note >> beInProgress [
 
 	assignedEmployeeOptional
-		withContentDo: [ state := 'in progress' ]
+		withContentDo: [ state := 'In progress' ]
 		ifUnused:
 			[ AssertionFailed signal: 'Cant modify state of note to ''in progress'' because it does not have an employee assigned' ]
 ]
@@ -72,7 +72,7 @@ Note >> beInProgress [
 { #category : #modifying }
 Note >> beOpen [
 
-	state := 'open'
+	state := 'Open'
 ]
 
 { #category : #accessing }

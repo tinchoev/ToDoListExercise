@@ -22,10 +22,17 @@ NoteModificationWebView class >> displayedIn: aWorkingContext changing: aNote [
 { #category : #initialization }
 NoteModificationWebView >> configureInteractions [
 
+	stateDropdown on trigger serializeIt.
+
 	acceptButton on trigger
 		disable;
-		serverDo: [ workingContext
-				updateNote: note with: noteWebView model;
+		serverDo: [ | tempNote |
+
+			tempNote := noteWebView model.
+			stateDropdown
+				withCurrentSelectionDo: [ :aState | workingContext modifyStateOf: tempNote to: aState ].
+			workingContext
+				updateNote: note with: tempNote;
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
@@ -79,9 +86,7 @@ NoteModificationWebView >> initializeStateDropdown [
 	stateDropdown := self componentSupplier dropdownListApplying: [ :dropdown |  ].
 	stateDropdown allowAnyOf: #('Open' 'In progress' 'Finished').
 	
-	stateDropdown choose: note description.
-
-	stateDropdown on trigger serializeIt
+	stateDropdown choose: note state.
 ]
 
 { #category : #initialization }
