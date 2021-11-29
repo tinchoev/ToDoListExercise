@@ -20,7 +20,7 @@ NoteBuilderTest >> setUp [
 	anEmployeesRepo := EmployeesRepository new
 		addEmployee: anEmployee;
 		yourself.
-	aNote := NoteBuilder describedBy: 'aDescription'
+	aNote := NoteBuilder new describedBy: 'aDescription'
 ]
 
 { #category : #tests }
@@ -36,10 +36,10 @@ NoteBuilderTest >> testCantCreateNoteAssignedToAnEmployeeThatIsntLoaded [
 ]
 
 { #category : #tests }
-NoteBuilderTest >> testCantCreateNoteWithoutDescription [
+NoteBuilderTest >> testCantCreateNoteWithoutEmptyDescription [
 
 	self
-		should: [ NoteBuilder describedBy: '' ]
+		should: [ NoteBuilder new build ]
 		raise: AssertionFailed
 		withMessageText: 'Note couldnt be created because it didnt have description'
 ]

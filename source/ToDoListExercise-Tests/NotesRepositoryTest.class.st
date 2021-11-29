@@ -20,7 +20,7 @@ NotesRepositoryTest >> setUp [
 	employeesRepo := EmployeesRepository new
 		addEmployee: martin;
 		yourself.
-	noteWithDescription := NoteBuilder describedBy: 'aDescription'
+	noteWithDescription := NoteBuilder new describedBy: 'aDescription'
 ]
 
 { #category : #tests }

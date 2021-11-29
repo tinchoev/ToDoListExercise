@@ -44,7 +44,6 @@ NotesWebView >> initializeDisplayedIn: aWorkingContext [
 		initializeStateModificationButton;
 		initializeEndingDateModificationButton;
 		initializeAssignedEmployeeModificationButton;
-		initializeModifyButton;
 		initializeTableWebView
 ]
 
@@ -61,28 +60,18 @@ NotesWebView >> initializeEndingDateModificationButton [
 ]
 
 { #category : #initialization }
-NotesWebView >> initializeModifyButton [
+NotesWebView >> initializeModifyButtonFor: aNote [
 
 	modifyButton := self componentSupplier
 		asynchronicButtonLabeled: 'Modify note'
 		applying: [ :theButton |  ].
 
 	modifyButton on trigger
-		serverDo: [ workingContext setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext ) ];
-		render: workingContext identifiedCurrentWebView
-]
-
-{ #category : #initialization }
-NotesWebView >> initializeModifyButton: aNote [
-
-	modifyButton := self componentSupplier
-		asynchronicButtonLabeled: 'Modify note'
-		applying: [ :theButton |  ].
-
-	modifyButton on trigger
-		serverDo: [ workingContext setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext ) ];
+		serverDo: [ workingContext
+				setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext changing: aNote )
+			];
 		render: workingContext identifiedCurrentWebView.
-		
+
 	^ modifyButton
 ]
 
@@ -146,7 +135,7 @@ NotesWebView >> initializeTableWebView [
 			column
 				titled: 'Assigned Employee';
 				rendering:
-						[ :note | note withAssignedEmployeeDo: [ :content | content ] ifUnassigned: [ :explanation | explanation ] ]
+						[ :note | note withAssignedEmployeeDo: [ :employee | employee name ] ifUnassigned: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
@@ -156,7 +145,7 @@ NotesWebView >> initializeTableWebView [
 		addColumn: [ :column | 
 			column
 				titled: 'Modify';
-				rendering: [ :note | self initializeModifyButton: note ]
+				rendering: [ :note | self initializeModifyButtonFor: note ]
 			];
 		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]

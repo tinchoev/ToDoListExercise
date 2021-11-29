@@ -11,19 +11,12 @@ Class {
 }
 
 { #category : #asserting }
-NoteBuilder class >> assertDescriptionIsNotEmpty: aDescription [
+NoteBuilder >> assertDescriptionIsNotEmpty [
 
 	AssertionChecker
-		refuse: [ aDescription isEmpty ]
+		refuse: [ description isEmpty | description isNil ]
 		because: 'Note couldnt be created because it didnt have description'
 		raising: AssertionFailed
-]
-
-{ #category : #'instance creation' }
-NoteBuilder class >> describedBy: aDescription [
-
-	self assertDescriptionIsNotEmpty: aDescription.
-	^ self new initializeDescribedBy: aDescription
 ]
 
 { #category : #accessing }
@@ -42,6 +35,7 @@ NoteBuilder >> assignedTo: anEmployee from: anEmployeesRepository [
 { #category : #creation }
 NoteBuilder >> build [
 
+	self assertDescriptionIsNotEmpty.
 	^ Note
 		describedBy: description
 		optionallyCategorizedBy: optionalCategory
@@ -63,6 +57,12 @@ NoteBuilder >> category [
 	^ optionalCategory
 ]
 
+{ #category : #modifying }
+NoteBuilder >> describedBy: aDescription [
+
+	description := aDescription
+]
+
 { #category : #accessing }
 NoteBuilder >> description [
 
@@ -82,9 +82,9 @@ NoteBuilder >> endingIn: anEndingDate [
 ]
 
 { #category : #initialization }
-NoteBuilder >> initializeDescribedBy: aDescription [
+NoteBuilder >> initialize [
 
-	description := aDescription.
+	description := ''.
 	optionalCategory := Optional unusedBecauseAll: 'Category not assigned yet'.
 	optionalAssignedEmployee := Optional unusedBecauseAll: 'Employee not assigned yet'.
 	optionalEndingDate := Optional unusedBecauseAll: 'Ending date not assigned yet'

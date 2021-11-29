@@ -18,14 +18,14 @@ NoteTest >> setUp [
 	employeesRepo := EmployeesRepository new
 		addEmployee: mickey;
 		yourself.
-	noteWithDescription := NoteBuilder describedBy: 'aDescription'
+	noteWithDescription := NoteBuilder new describedBy: 'aDescription'
 ]
 
 { #category : #tests }
 NoteTest >> testCantCreateNoteWithoutDescription [
 
 	self
-		should: [ Note newFrom: ( NoteBuilder describedBy: '' ) build ]
+		should: [ Note newFrom: NoteBuilder new build ]
 		raise: AssertionFailed
 		withMessageText: 'Note couldnt be created because it didnt have description'
 ]

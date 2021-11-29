@@ -34,3 +34,9 @@ Employee >> name [
 
 	^ name
 ]
+
+{ #category : #printing }
+Employee >> printOn: aStream [
+
+	aStream print: name
+]

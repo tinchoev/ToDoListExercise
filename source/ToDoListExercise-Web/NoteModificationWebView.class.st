@@ -7,15 +7,16 @@ Class {
 		'cancelButton',
 		'noteWebView',
 		'note',
-		'noteToUpdate'
+		'noteToUpdate',
+		'stateDropdown'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
 { #category : #'instance creation' }
-NoteModificationWebView class >> displayedIn: aWorkingContext [
+NoteModificationWebView class >> displayedIn: aWorkingContext changing: aNote [
 
-	^ self new initializeDisplayedIn: aWorkingContext
+	^ self new initializeDisplayedIn: aWorkingContext changing: aNote
 ]
 
 { #category : #initialization }
@@ -52,12 +53,14 @@ NoteModificationWebView >> initializeCancelButton [
 ]
 
 { #category : #initialization }
-NoteModificationWebView >> initializeDisplayedIn: aWorkingContext [
+NoteModificationWebView >> initializeDisplayedIn: aWorkingContext changing: aNote [
 
 	workingContext := aWorkingContext.
+	note := aNote.
 
 	self
 		initializeNoteWebView;
+		initializeStateDropdown;
 		initializeAcceptButton;
 		initializeCancelButton;
 		configureInteractions
@@ -67,7 +70,18 @@ NoteModificationWebView >> initializeDisplayedIn: aWorkingContext [
 NoteModificationWebView >> initializeNoteWebView [
 
 	noteWebView := NoteWebView displayedIn: workingContext.
-	noteWebView updateModelWith: noteToUpdate
+	noteWebView updateModelWith: note
+]
+
+{ #category : #initialization }
+NoteModificationWebView >> initializeStateDropdown [
+
+	stateDropdown := self componentSupplier dropdownListApplying: [ :dropdown |  ].
+	stateDropdown allowAnyOf: #('Open' 'In progress' 'Finished').
+	
+	stateDropdown choose: note description.
+
+	stateDropdown on trigger serializeIt
 ]
 
 { #category : #initialization }
@@ -75,6 +89,7 @@ NoteModificationWebView >> renderContentOn: aCanvas [
 
 	aCanvas
 		render: noteWebView;
+		render: stateDropdown;
 		render: acceptButton;
 		render: cancelButton
 ]

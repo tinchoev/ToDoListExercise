@@ -96,3 +96,13 @@ NotesContext >> setCurrentWebViewTo: aWebView [
 
 	workingContext setCurrentWebViewTo: aWebView
 ]
+
+{ #category : #modifying }
+NotesContext >> updateNote: aNote with: anotherNote [
+
+	self modifyEndingDateOf: aNote description to: ( anotherNote withEndingDateDo: [ :date | date ] ifNone: [  ] ).
+	self
+		reassign: aNote description
+		to: ( anotherNote withAssignedEmployeeDo: [ :employee | employee ] ifUnassigned: [  ] ).
+	self modifyStateOf: aNote to: anotherNote state
+]

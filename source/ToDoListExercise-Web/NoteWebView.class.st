@@ -8,7 +8,8 @@ Class {
 		'descriptionField',
 		'categoryField',
 		'assignedEmployeeDropdown',
-		'model'
+		'model',
+		'stateDropdown'
 	],
 	#category : #'ToDoListExercise-Web'
 }
@@ -23,7 +24,7 @@ NoteWebView class >> displayedIn: aWorkingContext [
 NoteWebView >> configureInteractions [
 
 	descriptionField on trigger
-		serverDo: [ model := NoteBuilder describedBy: descriptionField model ];
+		serverDo: [ model describedBy: descriptionField model ];
 		enable: categoryField;
 		enable: endingDateField.
 	categoryField on trigger serverDo: [ model categorizedBy: categoryField model ].
@@ -39,7 +40,7 @@ NoteWebView >> configureInteractions [
 NoteWebView >> initializeAssignedEmployeeDropdown [
 
 	assignedEmployeeDropdown := ( self componentSupplier dropdownListApplying: [ :dropdown |  ] )
-		allowAnyOf: ( workingContext employees collect: [ :employee | employee name ] );
+		allowAnyOf: workingContext employees;
 		yourself
 ]
 
@@ -47,7 +48,7 @@ NoteWebView >> initializeAssignedEmployeeDropdown [
 NoteWebView >> initializeCategoryField [
 
 	categoryField := self componentSupplier
-		singleLineTextFieldApplying: [ :theField | ( theField setPlaceholderTo: 'Write the category' ) + theField beDisabled ]
+		singleLineTextFieldApplying: [ :theField | theField setPlaceholderTo: 'Write the category' ]
 ]
 
 { #category : #initialization }
@@ -60,6 +61,7 @@ NoteWebView >> initializeDescriptionField [
 { #category : #initialization }
 NoteWebView >> initializeDisplayedIn: aWorkingContext [
 
+	model := NoteBuilder new.
 	workingContext := aWorkingContext.
 	noteBinding := Binding undefinedExplainedBy: 'Note not configured yet'.
 	self initializeDescriptionField
@@ -72,11 +74,18 @@ NoteWebView >> initializeDisplayedIn: aWorkingContext [
 { #category : #initialization }
 NoteWebView >> initializeEndingDateField [
 
-	endingDateField := self componentSupplier dateFieldApplying: [ :theField | theField beDisabled ]
+	endingDateField := self componentSupplier dateFieldApplying: [ :theField |  ]
 ]
 
 { #category : #initialization }
 NoteWebView >> model [
+
+	model describedBy: descriptionField model.
+	model categorizedBy: categoryField model.
+	model endingIn: ( Date fromString: endingDateField contents ).
+	assignedEmployeeDropdown
+		withCurrentSelectionDo:
+			[ :anEmployee | model assignedTo: anEmployee from: workingContext employeesRepository ].
 
 	^ model build
 ]
@@ -91,15 +100,14 @@ NoteWebView >> renderContentOn: aCanvas [
 		render: assignedEmployeeDropdown
 ]
 
-{ #category : #'as yet unclassified' }
-NoteWebView >> updateModelWith: aNoteToUpdate [
+{ #category : #configuration }
+NoteWebView >> updateModelWith: aNote [
 
-	descriptionField changeModelTo: aNoteToUpdate description.
-	aNoteToUpdate
-		withCategoryDo: [ :aCategory | categoryField changeModelTo: aCategory ]
-		ifUncategorized: [  ].
-	aNoteToUpdate withEndingDateDo: [ :aDate | endingDateField changeModelTo: aDate ] ifNone: [  ].
-	aNoteToUpdate
-		withAssignedEmployeeDo: [ :anEmployee | assignedEmployeeDropdown changeModelTo: anEmployee ]
-		ifNone: [  ]
+	descriptionField
+		changeModelTo: aNote description.
+	aNote withCategoryDo: [ :aCategory | categoryField changeModelTo: aCategory ] ifUncategorized: [  ].
+	aNote withEndingDateDo: [ :aDate | endingDateField changeModelTo: aDate ] ifNone: [  ].
+	aNote
+		withAssignedEmployeeDo: [ :anEmployee | assignedEmployeeDropdown choose: anEmployee ]
+		ifUnassigned: [  ]
 ]
