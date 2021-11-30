@@ -36,7 +36,7 @@ NoteTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmployeeAssigned [
 	| note |
 
 	note := noteWithDescription build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	self
 		should: [ note beInProgress ]
 		raise: AssertionFailed
@@ -59,7 +59,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsFinished [
 	self
 		should: [ note reassignTo: ( Employee named: 'Goofy' ) ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign note because it is finished'
+		withMessageText: 'Cant reassign note because it is Finished'
 ]
 
 { #category : #tests }
@@ -74,7 +74,7 @@ NoteTest >> testCantReassignNoteToAnotherEmployeeBecauseItIsInProgress [
 	self
 		should: [ note reassignTo: ( Employee named: 'Goofy' ) ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign note because it is in progress'
+		withMessageText: 'Cant reassign note because it is In progress'
 ]
 
 { #category : #tests }
@@ -213,11 +213,11 @@ NoteTest >> testModifyStateFromFinishedToInProgress [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beFinished.
-	self assert: note state equals: 'finished'.
+	self assert: note state equals: 'Finished'.
 	note beInProgress.
-	self assert: note state equals: 'in progress'
+	self assert: note state equals: 'In progress'
 ]
 
 { #category : #tests }
@@ -228,11 +228,11 @@ NoteTest >> testModifyStateFromFinishedToOpen [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beFinished.
-	self assert: note state equals: 'finished'.
+	self assert: note state equals: 'Finished'.
 	note beInProgress.
-	self assert: note state equals: 'in progress'
+	self assert: note state equals: 'In progress'
 ]
 
 { #category : #tests }
@@ -243,11 +243,11 @@ NoteTest >> testModifyStateFromInProgressToFinished [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beInProgress.
-	self assert: note state equals: 'in progress'.
+	self assert: note state equals: 'In progress'.
 	note beFinished.
-	self assert: note state equals: 'finished'
+	self assert: note state equals: 'Finished'
 ]
 
 { #category : #tests }
@@ -258,11 +258,11 @@ NoteTest >> testModifyStateFromInProgressToOpen [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beInProgress.
-	self assert: note state equals: 'in progress'.
+	self assert: note state equals: 'In progress'.
 	note beOpen.
-	self assert: note state equals: 'open'
+	self assert: note state equals: 'Open'
 ]
 
 { #category : #tests }
@@ -273,9 +273,9 @@ NoteTest >> testModifyStateFromOpenToFinished [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beFinished.
-	self assert: note state equals: 'finished'
+	self assert: note state equals: 'Finished'
 ]
 
 { #category : #tests }
@@ -286,9 +286,9 @@ NoteTest >> testModifyStateFromOpenToInProgress [
 	note := noteWithDescription
 		assignedTo: mickey from: employeesRepo;
 		build.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	note beInProgress.
-	self assert: note state equals: 'in progress'
+	self assert: note state equals: 'In progress'
 ]
 
 { #category : #tests }

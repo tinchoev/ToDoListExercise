@@ -47,8 +47,8 @@ Note >> assertStateIsNot: aState for: aMethod [
 Note >> assertStateIsNotInProgressNorFinishedFor: aMethod [
 
 	self
-		assertStateIsNot: 'in progress' for: aMethod;
-		assertStateIsNot: 'finished' for: aMethod
+		assertStateIsNot: 'In progress' for: aMethod;
+		assertStateIsNot: 'Finished' for: aMethod
 ]
 
 { #category : #modifying }
@@ -87,7 +87,7 @@ Note >> initializeDescribedBy: aDescription optionallyCategorizedBy: optionalCat
 	description := aDescription.
 	categoryOptional := optionalCategory.
 	endingDateOptional := optionalEndingDate.
-	state := 'open'.
+	state := 'Open'.
 	assignedEmployeeOptional := optionalAssignedEmployee
 ]
 

@@ -68,22 +68,6 @@ NotesRepositoryTest >> testCantModifyStateOfNoteFromOpenIfItDoesNotHaveAnEmploye
 ]
 
 { #category : #tests }
-NotesRepositoryTest >> testCantModifyStateOfNoteThatIsntLoaded [
-
-	| note |
-
-	note := noteWithDescription build.
-	self
-		should: [ notesRepo beInProgress: note ]
-		raise: AssertionFailed
-		withMessageText: 'Cant modify state to ''in progress'' because the note isnt added'.
-	self
-		should: [ notesRepo beFinished: note ]
-		raise: AssertionFailed
-		withMessageText: 'Cant modify state to ''finished'' because the note isnt added'
-]
-
-{ #category : #tests }
 NotesRepositoryTest >> testCantReassignANoteThatIsntLoaded [
 
 	self
@@ -105,7 +89,7 @@ NotesRepositoryTest >> testCantReassignNoteBecauseItIsFinished [
 	self
 		should: [ notesRepo reassign: note to: martin from: employeesRepo ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign note because it is finished'
+		withMessageText: 'Cant reassign note because it is Finished'
 ]
 
 { #category : #tests }
@@ -123,7 +107,7 @@ NotesRepositoryTest >> testCantReassignNoteBecauseItIsInProgress [
 	self
 		should: [ notesRepo reassign: note to: martin from: employeesRepo ]
 		raise: AssertionFailed
-		withMessageText: 'Cant reassign note because it is in progress'
+		withMessageText: 'Cant reassign note because it is In progress'
 ]
 
 { #category : #tests }
@@ -178,7 +162,7 @@ NotesRepositoryTest >> testCantRemoveNoteBecauseItIsFinished [
 	self
 		should: [ notesRepo remove: note ]
 		raise: AssertionFailed
-		withMessageText: 'Cant remove note because it is finished'
+		withMessageText: 'Cant remove note because it is Finished'
 ]
 
 { #category : #tests }
@@ -194,7 +178,7 @@ NotesRepositoryTest >> testCantRemoveNoteBecauseItIsInProgress [
 	self
 		should: [ notesRepo remove: note ]
 		raise: AssertionFailed
-		withMessageText: 'Cant remove note because it is in progress'
+		withMessageText: 'Cant remove note because it is In progress'
 ]
 
 { #category : #tests }
@@ -222,9 +206,9 @@ NotesRepositoryTest >> testModifyStateFromFinishedToInProgress [
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
-	self assert: note state equals: 'finished'.
+	self assert: note state equals: 'Finished'.
 	notesRepo beInProgress: note.
-	self assert: note state equals: 'in progress'
+	self assert: note state equals: 'In progress'
 ]
 
 { #category : #tests }
@@ -237,9 +221,9 @@ NotesRepositoryTest >> testModifyStateFromFinishedToOpen [
 		build.
 	notesRepo addNote: note.
 	notesRepo beFinished: note.
-	self assert: note state equals: 'finished'.
+	self assert: note state equals: 'Finished'.
 	notesRepo beOpen: note.
-	self assert: note state equals: 'open'
+	self assert: note state equals: 'Open'
 ]
 
 { #category : #tests }
@@ -252,9 +236,9 @@ NotesRepositoryTest >> testModifyStateFromInProgressToFinished [
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
-	self assert: note state equals: 'in progress'.
+	self assert: note state equals: 'In progress'.
 	notesRepo beFinished: note.
-	self assert: note state equals: 'finished'
+	self assert: note state equals: 'Finished'
 ]
 
 { #category : #tests }
@@ -267,9 +251,9 @@ NotesRepositoryTest >> testModifyStateFromInProgressToOpen [
 		build.
 	notesRepo addNote: note.
 	notesRepo beInProgress: note.
-	self assert: note state equals: 'in progress'.
+	self assert: note state equals: 'In progress'.
 	notesRepo beOpen: note.
-	self assert: note state equals: 'open'
+	self assert: note state equals: 'Open'
 ]
 
 { #category : #tests }
@@ -281,9 +265,9 @@ NotesRepositoryTest >> testModifyStateFromOpenToFinished [
 		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	notesRepo beFinished: note.
-	self assert: note state equals: 'finished'
+	self assert: note state equals: 'Finished'
 ]
 
 { #category : #tests }
@@ -295,9 +279,9 @@ NotesRepositoryTest >> testModifyStateFromOpenToInProgress [
 		assignedTo: martin from: employeesRepo;
 		build.
 	notesRepo addNote: note.
-	self assert: note state equals: 'open'.
+	self assert: note state equals: 'Open'.
 	notesRepo beInProgress: note.
-	self assert: note state equals: 'in progress'
+	self assert: note state equals: 'In progress'
 ]
 
 { #category : #tests }

@@ -86,9 +86,9 @@ NotesContext >> reassign: aDescription to: anEmployee [
 ]
 
 { #category : #modifying }
-NotesContext >> remove: aNoteDescription [
+NotesContext >> remove: aNote [
 
-	workingContext notesRepository remove: ( self noteDescriptedBy: aNoteDescription )
+	workingContext notesRepository remove: aNote
 ]
 
 { #category : #modifying }
