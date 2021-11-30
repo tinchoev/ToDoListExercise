@@ -14,23 +14,23 @@ NotesRepository >> addNote: aNote [
 ]
 
 { #category : #asserting }
-NotesRepository >> assertIsLoaded: aNote for: anAction [
+NotesRepository >> assertIsAdded: aNote for: anAction [
 
-	( notes includes: aNote )
-		ifFalse: [ AssertionFailed signal: ( 'Cant <1s> because the note isnt loaded' expandMacrosWith: anAction ) ]
+	AssertionChecker
+		enforce: [ notes includes: aNote ]
+		because: ( 'Cant <1s> because the note isnt added' expandMacrosWith: anAction )
+		raising: AssertionFailed
 ]
 
 { #category : #modifying }
 NotesRepository >> beFinished: aNote [
 
-	self assertIsLoaded: aNote for: 'modify state to ''finished'''.
 	aNote beFinished
 ]
 
 { #category : #modifying }
 NotesRepository >> beInProgress: aNote [
 
-	self assertIsLoaded: aNote for: 'modify state to ''in progress'''.
 	aNote beInProgress
 ]
 
@@ -49,7 +49,7 @@ NotesRepository >> initialize [
 { #category : #modifying }
 NotesRepository >> modifyEndingDateOf: aNote to: aDate [
 
-	self assertIsLoaded: aNote for: 'modify ending date'.
+	self assertIsAdded: aNote for: 'modify ending date'.
 	aNote modifyEndingDateTo: aDate
 ]
 
@@ -62,15 +62,15 @@ NotesRepository >> notes [
 { #category : #modifying }
 NotesRepository >> reassign: aNote to: anEmployee from: anEmployeesRepo [
 
-	self assertIsLoaded: aNote for: 'reassign to another employee'.
-	anEmployeesRepo assertIsLoaded: anEmployee for: 'reassign note'.
+	self assertIsAdded: aNote for: 'reassign to another employee'.
+	anEmployeesRepo assertIsAdded: anEmployee for: 'reassign note'.
 	aNote reassignTo: anEmployee
 ]
 
 { #category : #modifying }
 NotesRepository >> remove: aNote [
 
-	self assertIsLoaded: aNote for: 'remove note'.
+	self assertIsAdded: aNote for: 'remove note'.
 	aNote
 		assertStateIsNotInProgressNorFinishedFor: 'remove';
 		assertNoteDoesntHaveAnEndingDate.

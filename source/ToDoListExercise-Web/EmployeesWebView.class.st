@@ -43,7 +43,7 @@ EmployeesWebView >> initializeTableWebView [
 		addColumn: [ :column | 
 			column
 				titled: 'Name';
-				rendering: [ :anEmployee | anEmployee ]
+				rendering: [ :anEmployee | anEmployee name ]
 			];
 		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]

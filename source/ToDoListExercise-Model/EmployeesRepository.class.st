@@ -17,16 +17,19 @@ EmployeesRepository >> addEmployee: anEmployee [
 { #category : #asserting }
 EmployeesRepository >> assertEmployeeIsNotAdded: anEmployee [
 
-	( employees includes: anEmployee )
-		ifTrue: [ AssertionFailed signal: 'Cant add employee because it is already added' ]
+	AssertionChecker
+		refuse: [ employees includes: anEmployee ]
+		because: 'Cant add employee because it is already added'
+		raising: AssertionFailed
 ]
 
 { #category : #asserting }
-EmployeesRepository >> assertIsLoaded: anEmployee for: anAction [
+EmployeesRepository >> assertIsAdded: anEmployee for: anAction [
 
-	( employees includes: anEmployee )
-		ifFalse: [ AssertionFailed
-				signal: ( 'Cant <1s> because the employee isnt loaded' expandMacrosWith: anAction ) ]
+	AssertionChecker
+		enforce: [ employees includes: anEmployee ]
+		because: ( 'Cant <1s> because the employee isnt added' expandMacrosWith: anAction )
+		raising: AssertionFailed
 ]
 
 { #category : #accessing }

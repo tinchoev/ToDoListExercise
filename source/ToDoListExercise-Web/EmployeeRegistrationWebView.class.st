@@ -10,7 +10,7 @@ Class {
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 EmployeeRegistrationWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
@@ -26,7 +26,7 @@ EmployeeRegistrationWebView >> configureInteractions [
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				addEmployee: nameField model;
+				addEmployee: ( Employee named: nameField model );
 				setCurrentWebViewTo: ( EmployeesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.

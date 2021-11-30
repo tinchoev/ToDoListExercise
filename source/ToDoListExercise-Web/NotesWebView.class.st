@@ -8,29 +8,16 @@ Class {
 		'removeButton',
 		'modifyStateButton',
 		'modifyEndingDateButton',
-		'modifyEmployeeButton'
+		'modifyEmployeeButton',
+		'modifyButton'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
+{ #category : #'instance creation' }
 NotesWebView class >> displayedIn: aWorkingContext [
 
 	^ self new initializeDisplayedIn: aWorkingContext
-]
-
-{ #category : #initialization }
-NotesWebView >> initializeAssignedEmployeeModificationButton [
-
-	modifyEmployeeButton := self componentSupplier
-		asynchronicButtonLabeled: 'Reassign note to another employee'
-		applying: [ :theButton |  ].
-
-	modifyEmployeeButton on trigger
-		serverDo: [ workingContext
-				setCurrentWebViewTo: ( NoteAssignedEmployeeModificationWebView displayedIn: workingContext )
-			];
-		render: workingContext identifiedCurrentWebView
 ]
 
 { #category : #initialization }
@@ -40,22 +27,23 @@ NotesWebView >> initializeDisplayedIn: aWorkingContext [
 	self
 		initializeRegistrationButton;
 		initializeRemoveButton;
-		initializeStateModificationButton;
-		initializeEndingDateModificationButton;
-		initializeAssignedEmployeeModificationButton;
 		initializeTableWebView
 ]
 
 { #category : #initialization }
-NotesWebView >> initializeEndingDateModificationButton [
+NotesWebView >> initializeModifyButtonFor: aNote [
 
-	modifyEndingDateButton := self componentSupplier
-		asynchronicButtonLabeled: 'Modify ending date of a note'
+	modifyButton := self componentSupplier
+		asynchronicButtonLabeled: 'Modify note'
 		applying: [ :theButton |  ].
 
-	modifyEndingDateButton on trigger
-		serverDo: [ workingContext setCurrentWebViewTo: ( NoteEndingDateModificationWebView displayedIn: workingContext ) ];
-		render: workingContext identifiedCurrentWebView
+	modifyButton on trigger
+		serverDo: [ workingContext
+				setCurrentWebViewTo: ( NoteModificationWebView displayedIn: workingContext changing: aNote )
+			];
+		render: workingContext identifiedCurrentWebView.
+
+	^ modifyButton
 ]
 
 { #category : #initialization }
@@ -83,15 +71,19 @@ NotesWebView >> initializeRemoveButton [
 ]
 
 { #category : #initialization }
-NotesWebView >> initializeStateModificationButton [
+NotesWebView >> initializeRemoveButtonFor: aNote [
 
-	modifyStateButton := self componentSupplier
-		asynchronicButtonLabeled: 'Modify state of a note'
+	removeButton := self componentSupplier
+		asynchronicButtonLabeled: 'Remove note'
 		applying: [ :theButton |  ].
 
-	modifyStateButton on trigger
-		serverDo: [ workingContext setCurrentWebViewTo: ( NoteStateModificationWebView displayedIn: workingContext ) ];
-		render: workingContext identifiedCurrentWebView
+	removeButton on trigger
+		serverDo: [ workingContext
+				setCurrentWebViewTo: ( NoteRemovalWebView displayedIn: workingContext removing: aNote )
+			];
+		render: workingContext identifiedCurrentWebView.
+
+	^ removeButton
 ]
 
 { #category : #initialization }
@@ -106,22 +98,34 @@ NotesWebView >> initializeTableWebView [
 		addColumn: [ :column | 
 			column
 				titled: 'Categoría';
-				rendering: [ :note | note category withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering:
+						[ :note | note withCategoryDo: [ :content | content ] ifUncategorized: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Ending Date';
-				rendering: [ :note | note endingDate withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering: [ :note | note withEndingDateDo: [ :content | content ] ifNone: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'Assigned Employee';
-				rendering: [ :note | note assignedEmployee withContentDo: [ :content | content ] ifUnused: [ :explanation | explanation ] ]
+				rendering:
+						[ :note | note withAssignedEmployeeDo: [ :employee | employee name ] ifUnassigned: [ :explanation | explanation ] ]
 			];
 		addColumn: [ :column | 
 			column
 				titled: 'State';
 				rendering: [ :note | note state ]
+			];
+		addColumn: [ :column | 
+			column
+				titled: '';
+				rendering: [ :note | self initializeModifyButtonFor: note ]
+			];
+		addColumn: [ :column | 
+			column
+				titled: '';
+				rendering: [ :note | self initializeRemoveButtonFor: note ]
 			];
 		buildApplying: [ :container | container addClass bootstrap3 table ]
 ]
@@ -133,9 +137,5 @@ NotesWebView >> renderContentOn: aCanvas [
 
 	aCanvas
 		render: registrationButton;
-		render: removeButton;
-		render: modifyStateButton;
-		render: modifyEndingDateButton;
-		render: modifyEmployeeButton;
 		render: tableWebView
 ]

@@ -5,28 +5,25 @@ Class {
 		'descriptionDropdown',
 		'workingContext',
 		'acceptButton',
-		'cancelButton'
+		'cancelButton',
+		'note'
 	],
 	#category : #'ToDoListExercise-Web'
 }
 
-{ #category : #constructor }
-NoteRemovalWebView class >> displayedIn: aWorkingContext [
+{ #category : #'instance creation' }
+NoteRemovalWebView class >> displayedIn: aWorkingContext removing: aNote [
 
-	^ self new initializeDisplayedIn: aWorkingContext
+	^ self new initializeDisplayedIn: aWorkingContext removing: aNote
 ]
 
 { #category : #initialization }
 NoteRemovalWebView >> configureInteractions [
 
-	descriptionDropdown on trigger
-		serializeIt;
-		enable: acceptButton.
-
 	acceptButton on trigger
 		disable;
 		serverDo: [ workingContext
-				remove: descriptionDropdown currentSelection;
+				remove: note;
 				setCurrentWebViewTo: ( NotesWebView displayedIn: workingContext )
 			];
 		render: workingContext identifiedCurrentWebView.
@@ -42,7 +39,7 @@ NoteRemovalWebView >> initializeAcceptButton [
 
 	acceptButton := self componentSupplier
 		asynchronicButtonLabeled: 'Accept'
-		applying: [ :theButton | theButton beDisabled ]
+		applying: [ :theButton |  ]
 ]
 
 { #category : #initialization }
@@ -51,13 +48,6 @@ NoteRemovalWebView >> initializeCancelButton [
 	cancelButton := self componentSupplier
 		asynchronicButtonLabeled: 'Cancel'
 		applying: [ :theButton | ]
-]
-
-{ #category : #initialization }
-NoteRemovalWebView >> initializeDescriptionDropdown [
-
-	descriptionDropdown := self componentSupplier dropdownListApplying: [ :dropdown |  ].
-	descriptionDropdown allowAnyOf: ( workingContext notes collect: [ :note | note description ] )
 ]
 
 { #category : #initialization }
@@ -71,11 +61,26 @@ NoteRemovalWebView >> initializeDisplayedIn: aWorkingContext [
 		configureInteractions
 ]
 
+{ #category : #initialization }
+NoteRemovalWebView >> initializeDisplayedIn: aWorkingContext removing: aNote [
+
+	note := aNote.
+	workingContext := aWorkingContext.
+	self
+		initializeAcceptButton;
+		initializeCancelButton;
+		configureInteractions
+]
+
 { #category : #rendering }
 NoteRemovalWebView >> renderContentOn: aCanvas [
 
 	aCanvas
-		render: descriptionDropdown;
+		render:
+			( HeadingWebView
+				displaying: 'You are about to delete a note. Continue?'
+				withLevel: 4
+				applying: [ :heading |  ] );
 		render: acceptButton;
 		render: cancelButton
 ]

@@ -52,14 +52,14 @@ NotesContext >> modifyEndingDateOf: aDescription to: aDate [
 ]
 
 { #category : #modifying }
-NotesContext >> modifyStateOf: aDescription to: aState [
+NotesContext >> modifyStateOf: aNote to: aState [
 
 	aState = 'Open'
-		ifTrue: [ workingContext notesRepository beOpen: ( self noteDescriptedBy: aDescription ) ]
+		ifTrue: [ workingContext notesRepository beOpen: aNote ]
 		ifFalse: [ aState = 'In progress'
-				ifTrue: [ workingContext notesRepository beInProgress: ( self noteDescriptedBy: aDescription ) ]
+				ifTrue: [ workingContext notesRepository beInProgress: aNote ]
 				ifFalse: [ aState = 'Finished'
-						ifTrue: [ workingContext notesRepository beFinished: ( self noteDescriptedBy: aDescription ) ]
+						ifTrue: [ workingContext notesRepository beFinished: aNote ]
 					]
 			]
 ]
@@ -86,13 +86,23 @@ NotesContext >> reassign: aDescription to: anEmployee [
 ]
 
 { #category : #modifying }
-NotesContext >> remove: aNoteDescription [
+NotesContext >> remove: aNote [
 
-	workingContext notesRepository remove: ( self noteDescriptedBy: aNoteDescription )
+	workingContext notesRepository remove: aNote
 ]
 
 { #category : #modifying }
 NotesContext >> setCurrentWebViewTo: aWebView [
 
 	workingContext setCurrentWebViewTo: aWebView
+]
+
+{ #category : #modifying }
+NotesContext >> updateNote: aNote with: anotherNote [
+
+	self modifyEndingDateOf: aNote description to: ( anotherNote withEndingDateDo: [ :date | date ] ifNone: [  ] ).
+	self
+		reassign: aNote description
+		to: ( anotherNote withAssignedEmployeeDo: [ :employee | employee ] ifUnassigned: [  ] ).
+	self modifyStateOf: aNote to: anotherNote state
 ]
